@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#0c1a13">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hockey Lab: Free Stickhandling Workout Creator</title>
 <meta name="description" content="Answer 5 quick questions and get a day-by-day stickhandling plan for the rink, the gym or your garage, built from Wyatt Beck's own Hockey Lab drills. Free.">
@@ -40,13 +41,13 @@ p { margin: 0; }
 .screen { position: relative; height: 100svh; display: flex; flex-direction: column; padding: 0 var(--gut) env(safe-area-inset-bottom); }
 
 /* clip: full-bleed behind everything on phones, its own frame on desktop */
-.clip { position: fixed; left: 0; right: 0; top: calc(-1 * env(safe-area-inset-top, 0px)); height: calc(100lvh + env(safe-area-inset-top, 0px)); background: var(--bg-2) url(clips/hero.jpg) center 30% / cover; }
+.clip { position: fixed; left: 0; right: 0; top: calc(-1 * env(safe-area-inset-top, 0px)); height: calc(100lvh + env(safe-area-inset-top, 0px)); background: var(--bg) url(clips/hero.jpg) center 30% / cover; }
 #landing[hidden] .clip { display: none; }
 .clip video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s var(--out); }
 .clip video.on { opacity: 1; }
 .clip video { will-change: opacity; }
 .clip video:first-of-type { transition-duration: .35s; } /* first clip shows up right away */
-.clip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(12 26 19 / .7) 0%, rgb(12 26 19 / .15) 22%, rgb(12 26 19 / .35) 42%, rgb(12 26 19 / .92) 64%, var(--bg) 80%); }
+.clip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--bg) 0%, rgb(12 26 19 / .6) 8%, rgb(12 26 19 / .15) 22%, rgb(12 26 19 / .35) 42%, rgb(12 26 19 / .92) 64%, var(--bg) 80%); }
 .clip video { object-position: var(--pos, 18% 30%); } /* phones: keep Wyatt in shot, per clip */
 .clip .tag { display: none; position: absolute; z-index: 1; font: 800 .95rem/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); opacity: .85; }
 .clip .tag i { font-style: normal; color: var(--lab); }
