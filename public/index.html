@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hockey Lab: Free Stickhandling Workout Creator</title>
+<meta name="description" content="Answer 5 quick questions and get a day-by-day stickhandling plan for the rink, the gym or your garage, built from Wyatt Beck's own Hockey Lab drills. Free.">
+<meta name="theme-color" content="#0c1a13">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230c1a13%22/%3E%3Cpath%20d%3D%22M26%2014h12v6l9%2024a4%204%200%200%201-4%206H21a4%204%200%200%201-4-6l9-24z%22%20fill%3D%22none%22%20stroke%3D%22%23eef2ec%22%20stroke-width%3D%224%22/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="clips/hero.jpg" as="image" fetchpriority="high">
+<style>
+/* self-hosted variable fonts (SIL OFL, see fonts/) */
+@font-face { font-family: "Big Shoulders Display"; src: url(fonts/big-shoulders.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url(fonts/archivo.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+/* Hockey Lab: one screen, one offer. Pine green from the trees outside Wyatt's garage, ice-white ink,
+   lab green for the accent. Texture: his garage floor tiles, as a faint grid. */
+:root {
+  --bg: #0c1a13;
+  --bg-2: #10231a;
+  --ink: #eef2ec;
+  --mute: #a3b6aa;
+  --dim: #6c8476;
+  --line: rgb(238 242 236 / .10);
+  --lab: #8fdc6e;
+  --display: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif;
+  --body: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --gut: 20px;
+  --out: cubic-bezier(.16, 1, .3, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; }
+p { margin: 0; }
+::selection { background: var(--lab); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--lab); outline-offset: 3px; border-radius: 4px; }
+
+.screen { position: relative; height: 100svh; display: flex; flex-direction: column; padding: 0 var(--gut) env(safe-area-inset-bottom); }
+
+/* clip: full-bleed behind everything on phones, its own frame on desktop */
+.clip { position: absolute; inset: 0; background: var(--bg-2) url(clips/hero.jpg) center 30% / cover; }
+.clip video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s var(--out); }
+.clip video.on { opacity: 1; }
+.clip video { will-change: opacity; }
+.clip video:first-of-type { transition-duration: .35s; } /* first clip shows up right away */
+.clip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(12 26 19 / .7) 0%, rgb(12 26 19 / .15) 22%, rgb(12 26 19 / .35) 42%, rgb(12 26 19 / .92) 64%, var(--bg) 80%); }
+.clip video { object-position: var(--pos, 18% 30%); } /* phones: keep Wyatt in shot, per clip */
+.clip .tag { display: none; position: absolute; z-index: 1; font: 800 .95rem/1 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); opacity: .85; }
+.clip .tag i { font-style: normal; color: var(--lab); }
+
+.top { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; height: 72px; flex: none; }
+.top .logo { width: 128px; }
+.top a.ig { font-size: .875rem; color: var(--mute); text-decoration: none; padding: 12px 0; transition: color .2s; }
+.top a.ig:hover { color: var(--ink); }
+
+.offer { position: relative; z-index: 2; margin-top: auto; padding-bottom: max(56px, 11svh); max-width: 560px; }
+.eyebrow { display: block; font: 600 .75rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--mute); }
+.eyebrow b { color: var(--lab); font-weight: 600; }
+h1 { margin: 14px 0 14px; font: 900 clamp(2.9rem, 13.5vw, 6.6rem)/.94 var(--display); text-transform: uppercase; letter-spacing: -.005em; text-wrap: balance; }
+h1 span { display: block; color: var(--lab); }
+.lede { max-width: 32ch; font-size: 1.0625rem; color: var(--mute); }
+.btn { margin-top: 24px; display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px; min-height: 58px; padding: 0 30px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 1.0625rem/1 var(--body); text-decoration: none; box-shadow: 0 1px 0 rgb(255 255 255 / .5) inset, 0 18px 44px -16px rgb(143 220 110 / .6); transition: transform .35s var(--out); }
+.btn svg { width: 18px; height: 18px; transition: transform .35s var(--out); }
+.btn { position: relative; isolation: isolate; }
+.btn::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 24px 52px -16px rgb(143 220 110 / .75); opacity: 0; transition: opacity .35s var(--out); }
+.btn:hover { transform: translateY(-2px); }
+.btn:hover::after { opacity: 1; }
+.btn:hover svg { transform: translateX(4px); }
+.btn:active { transform: scale(.98); }
+.micro { margin-top: 12px; font-size: .8125rem; color: var(--dim); text-align: center; }
+
+/* one entrance */
+.rise { animation: rise 1s var(--out) both; }
+.d1 { animation-delay: .08s; } .d2 { animation-delay: .16s; } .d3 { animation-delay: .26s; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+
+@media (min-width: 900px) {
+  :root { --gut: 48px; }
+  .screen { display: grid; grid-template-columns: 1.1fr .9fr; grid-template-rows: auto 1fr; column-gap: 64px; max-width: 1280px; margin: 0 auto; }
+  .screen::before { /* garage floor tiles */
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .5; z-index: 0;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(80% 70% at 70% 45%, #000 20%, transparent 75%);
+  }
+  .screen::after { /* green light behind the clip */
+    content: ""; position: fixed; width: 780px; height: 780px; right: -120px; top: 8%; pointer-events: none; z-index: 0;
+    background: radial-gradient(closest-side, rgb(143 220 110 / .15), transparent);
+  }
+  .top { grid-column: 1 / -1; height: 88px; }
+  .top .logo { width: 140px; }
+  .offer { grid-column: 1; grid-row: 2; margin: 0; align-self: center; padding-bottom: 40px; }
+  .btn { display: inline-flex; width: auto; }
+  .micro { text-align: left; }
+  .clip { grid-column: 2; grid-row: 2; position: relative; inset: auto; z-index: 1; align-self: center; justify-self: end; width: min(100%, 440px); max-height: calc(100svh - 160px); aspect-ratio: 4 / 5; margin-bottom: 40px; border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 40px 80px -40px rgb(0 0 0 / .7), 0 30px 90px -50px rgb(143 220 110 / .35); }
+  .clip::after { background: linear-gradient(180deg, transparent 60%, rgb(12 26 19 / .7)); }
+  .clip .tag { display: block; left: 20px; bottom: 18px; }
+  .clip video { object-position: center 30%; }
+  .offer { max-width: 700px; }
+  h1 { font-size: clamp(3.5rem, 6.2vw, 5.6rem); }
+}
+/* short laptop screens: keep everything above the fold */
+@media (min-width: 900px) and (max-height: 760px) {
+  h1 { font-size: clamp(2.9rem, 9.5vh, 5.2rem); }
+  .top { height: 72px; }
+}
+/* ---------- flow: landing / quiz / email are one locked screen; the plan scrolls ---------- */
+body.lock { overflow: hidden; }
+[hidden] { display: none !important; }
+.step { position: relative; min-height: 100svh; max-width: 560px; margin: 0 auto; padding: 0 var(--gut) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+.step-top { display: flex; align-items: center; justify-content: space-between; height: 64px; flex: none; }
+.step-top .logo { width: 104px; }
+.back { display: inline-flex; align-items: center; gap: 6px; margin-left: -8px; padding: 10px 8px; border: 0; background: none; color: var(--mute); font: 500 .875rem/1 var(--body); cursor: pointer; border-radius: 8px; transition: color .2s; }
+.back:hover { color: var(--ink); }
+.back svg { width: 16px; height: 16px; }
+.count { font: 600 .75rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
+.bar { height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; flex: none; }
+.bar i { display: block; height: 100%; background: var(--lab); border-radius: 3px; transform-origin: 0 50%; transform: scaleX(0); transition: transform .6s var(--out); }
+.ask { margin: auto 0; padding: 20px 0 9svh; }
+.ask h2 { margin: 0; font: 900 clamp(2.4rem, 10vw, 3.6rem)/.96 var(--display); text-transform: uppercase; text-wrap: balance; }
+.ask .help { margin-top: 10px; color: var(--mute); }
+.opts { display: grid; gap: 10px; margin-top: 26px; }
+.opt { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 60px; padding: 0 20px; border: 1px solid var(--line); border-radius: 16px; background: rgb(238 242 236 / .02); color: var(--ink); font: 500 1.0625rem/1.2 var(--body); text-align: left; cursor: pointer; transition: border-color .2s, background-color .2s, transform .25s var(--out); }
+.opt:hover { border-color: rgb(238 242 236 / .3); }
+.opt:active { transform: scale(.985); }
+.opt .mk { flex: none; width: 24px; height: 24px; border: 1.5px solid rgb(238 242 236 / .3); border-radius: 50%; display: grid; place-items: center; transition: background-color .2s, border-color .2s; }
+.opt.multi .mk { border-radius: 7px; }
+.opt .mk svg { width: 13px; height: 13px; color: var(--bg); opacity: 0; }
+.opt[aria-pressed="true"] { border-color: var(--lab); background: rgb(143 220 110 / .08); }
+.opt[aria-pressed="true"] .mk { background: var(--lab); border-color: var(--lab); }
+.opt[aria-pressed="true"] .mk svg { opacity: 1; }
+.step .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+.step .btn { margin-top: 18px; }
+.anim { animation: rise .7s var(--out) both; }
+
+/* email */
+.field { display: grid; gap: 8px; margin-top: 16px; }
+.field label { font: 600 .8125rem/1 var(--body); color: var(--mute); }
+.field input { height: 56px; padding: 0 18px; border: 1px solid var(--line); border-radius: 14px; background: rgb(238 242 236 / .03); color: var(--ink); font: 400 1.0625rem/1 var(--body); transition: border-color .2s; }
+.field input::placeholder { color: var(--dim); }
+.field input:focus { outline: none; border-color: var(--lab); }
+.check { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; font-size: .875rem; color: var(--mute); cursor: pointer; }
+.check input { flex: none; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--lab); }
+.fine { margin-top: 14px; font-size: .75rem; color: var(--dim); text-align: center; }
+.fine a { color: var(--mute); }
+
+/* ---------- plan ---------- */
+.plan { max-width: 680px; margin: 0 auto; padding: 0 var(--gut) calc(48px + env(safe-area-inset-bottom)); }
+.plan-top { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+.plan-top .logo { width: 112px; }
+.plan-top button { border: 0; background: none; color: var(--mute); font: 500 .875rem/1 var(--body); padding: 10px 0; cursor: pointer; }
+.plan-top button:hover { color: var(--ink); }
+.plan-head { padding: 28px 0 28px; }
+.plan-head h1 { font-size: clamp(2.8rem, 12vw, 4.6rem); margin: 12px 0 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips span { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: .8125rem; color: var(--mute); }
+
+.test { display: grid; grid-template-columns: 1fr auto; gap: 14px 16px; align-items: center; padding: 20px; border-radius: 18px; background: #132a1f; box-shadow: 0 0 0 1px var(--line); }
+.test h3 { margin: 0; font: 800 1.3rem/1 var(--display); text-transform: uppercase; letter-spacing: .02em; }
+.test p { grid-column: 1 / -1; margin-top: -6px; font-size: .9375rem; color: var(--mute); }
+.test .nums { grid-column: 1 / -1; display: flex; gap: 10px; align-items: end; }
+.test label { display: grid; gap: 6px; font: 600 .6875rem/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.test input { width: 92px; height: 48px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: 800 1.5rem/1 var(--display); text-align: center; }
+.test input:focus { outline: none; border-color: var(--lab); }
+.test .gain { margin-left: auto; font: 900 2rem/1 var(--display); color: var(--lab); }
+
+.tabs { display: flex; gap: 6px; margin: 36px 0 14px; padding: 4px; border-radius: 999px; background: rgb(238 242 236 / .04); box-shadow: 0 0 0 1px var(--line); }
+.tabs button { flex: 1; height: 44px; border: 0; border-radius: 999px; background: none; color: var(--mute); font: 800 1.05rem/1 var(--display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: background-color .25s, color .25s; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+
+.days { border-top: 1px solid var(--line); }
+.day { border-bottom: 1px solid var(--line); interpolate-size: allow-keywords; }
+.day::details-content { height: 0; overflow: clip; transition: height .45s var(--out), content-visibility .45s allow-discrete; }
+.day[open]::details-content { height: auto; }
+.day summary { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 12px; min-height: 72px; list-style: none; cursor: pointer; }
+.day summary::-webkit-details-marker { display: none; }
+.day summary b { font: 900 1.7rem/1 var(--display); text-transform: uppercase; }
+.day summary span { font-weight: 500; }
+.day summary small { display: block; margin-top: 3px; font-size: .8125rem; font-weight: 400; color: var(--dim); }
+.day summary svg { width: 20px; height: 20px; color: var(--dim); transition: transform .35s var(--out); }
+.day[open] summary svg { transform: rotate(180deg); color: var(--lab); }
+.day summary:hover b { color: var(--lab); }
+.drills { list-style: none; margin: 0 0 18px; padding: 0 0 0 76px; counter-reset: d; }
+.drills li { display: grid; grid-template-columns: 1fr auto; gap: 2px 14px; padding: 10px 0; border-top: 1px dashed var(--line); counter-increment: d; }
+.drills li:first-child { border-top: 0; }
+.drills .n { font-weight: 500; }
+.drills .n::before { content: counter(d) ". "; color: var(--dim); }
+.drills .a { font: 800 1rem/1.5 var(--display); letter-spacing: .03em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+.src { margin: 0 0 18px 76px; font-size: .8125rem; color: var(--dim); }
+.src a { color: var(--lab); text-underline-offset: 3px; }
+.rest { padding: 16px 0 0; font-size: .875rem; color: var(--dim); }
+
+.next { margin-top: 56px; padding: 28px 22px 24px; border-radius: 22px; background: radial-gradient(120% 80% at 100% 0%, rgb(143 220 110 / .14), transparent 60%), #132a1f; box-shadow: 0 0 0 1px var(--line); text-align: center; }
+.next h2 { margin: 12px 0 10px; font: 900 clamp(2.2rem, 9vw, 3.2rem)/.96 var(--display); text-transform: uppercase; }
+.next p { max-width: 38ch; margin: 0 auto; color: var(--mute); }
+.next p.plain { max-width: 30ch; color: var(--ink); font-size: 1.125rem; font-weight: 500; line-height: 1.5; }
+.test p.more { margin-top: -8px; font-size: .8125rem; color: var(--lab); }
+.tabs button.locked { display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: var(--dim); }
+.tabs button.locked svg { width: 14px; height: 14px; }
+.tabs button.locked:hover { color: var(--lab); }
+.vs { width: 100%; margin: 22px 0 4px; border-collapse: collapse; text-align: left; font-size: .875rem; }
+.vs th, .vs td { padding: 12px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+.vs thead th { border-top: 0; font: 600 .6875rem/1.2 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.vs thead th:last-child { color: var(--lab); }
+.vs tbody th { width: 64px; font: 800 .95rem/1.4 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
+.vs td { color: var(--dim); }
+.vs td:last-child { color: var(--ink); font-weight: 500; }
+.vsl { margin: 22px 0 6px; aspect-ratio: 16 / 9; border-radius: 16px; display: grid; place-items: center; border: 1.5px dashed rgb(238 242 236 / .2); color: var(--dim); font-size: .8125rem; }
+.next .btn { display: inline-flex; width: auto; margin-top: 18px; }
+.plan-foot { margin-top: 28px; text-align: center; font-size: .75rem; color: var(--dim); }
+
+/* soft green light behind the one-screen steps, like the landing */
+.step::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(60% 50% at 50% 100%, rgb(143 220 110 / .10), transparent 70%); }
+.test input::-webkit-outer-spin-button, .test input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.test input { -moz-appearance: textfield; appearance: textfield; }
+@media (min-width: 900px) {
+  .ask { margin: auto 0; }
+  .plan-head { padding-top: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { .rise, .anim { animation: none; } }
+</style>
+</head>
+<body>
+<main class="screen" id="landing">
+  <nav class="top rise" aria-label="Hockey Lab">
+    <img class="logo" src="logo-300.webp" srcset="logo-300.webp 2x, logo-450.webp 3x" alt="Hockey Lab" width="140" height="51" decoding="async">
+  </nav>
+
+  <figure class="clip rise d2" style="margin:0">
+    <!-- three of Wyatt's own reels, crossfading: garage (DWSG6f6AeBC), outdoor court (DTi4TI_j0j9), street (DSEaH2rDFwX) -->
+    <video src="clips/hero.mp4" poster="clips/hero.jpg" muted playsinline preload="auto" style="--pos:18% 30%" data-tag="3 pucks <i>·</i> Figure eights" aria-label="Wyatt running figure eights between three pucks on garage tiles"></video>
+    <video src="clips/court.mp4" poster="clips/court.jpg" muted playsinline preload="none" style="--pos:12% 30%" data-tag="7 drills <i>·</i> Home or ice" aria-label="Wyatt stickhandling on an outdoor sport court"></video>
+    <video src="clips/street.mp4" poster="clips/street.jpg" muted playsinline preload="none" style="--pos:62% 30%" data-tag="Hockey <i>·</i> Therapy" aria-label="Wyatt stickhandling in the street outside his house"></video>
+    <span class="tag" id="ctag">3 pucks <i>·</i> Figure eights</span>
+  </figure>
+
+  <div class="offer">
+    <span class="eyebrow rise d1"><b>Free</b> &nbsp;·&nbsp; Workout creator</span>
+    <h1 class="rise d1">Quicker hands. <span>Built around your week.</span></h1>
+    <p class="lede rise d2">Answer 5 quick questions. Get a day-by-day stickhandling plan built from Wyatt's own drills.</p>
+    <a class="btn rise d3" href="#q1">Build my free plan
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <p class="micro rise d3">Free. Takes about 2 minutes.</p>
+  </div>
+</main>
+<!-- ---------- quiz: one question per screen ---------- -->
+<section class="step" id="quiz" hidden>
+  <div class="step-top">
+    <button class="back" type="button" id="qback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+    <span class="count" id="qcount">1 of 5</span>
+  </div>
+  <div class="bar" aria-hidden="true"><i id="qbar"></i></div>
+  <div class="ask" id="qbody"></div>
+</section>
+
+<!-- ---------- email ---------- -->
+<section class="step" id="email" hidden>
+  <div class="step-top">
+    <button class="back" type="button" id="eback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+    <img class="logo" src="logo-300.webp" srcset="logo-300.webp 2x, logo-450.webp 3x" alt="Hockey Lab" width="104" height="38" decoding="async">
+  </div>
+  <div class="bar" aria-hidden="true"><i style="transform:none"></i></div>
+  <form class="ask anim" id="eform" novalidate>
+    <span class="eyebrow"><b>Done</b> &nbsp;·&nbsp; Your plan is ready</span>
+    <h2 style="margin-top:14px">Where should we send it?</h2>
+    <div class="field"><label for="ename" id="lname">First name</label><input id="ename" name="name" autocomplete="given-name" placeholder="Wyatt" required></div>
+    <div class="field"><label for="eemail" id="lemail">Email</label><input id="eemail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@email.com" required></div>
+    <label class="check" id="parentrow" hidden><input type="checkbox" id="eparent"> <span>I'm the player's parent or guardian, and this is my email.</span></label>
+    <label class="check"><input type="checkbox" id="etips"> <span>Send me Hockey Lab training tips too.</span></label>
+    <button class="btn" type="submit" id="esubmit" disabled>Show my plan
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+    <!-- [PLACEHOLDER: privacy page before launch] -->
+    <p class="fine">No spam. Unsubscribe anytime. <a href="#">Privacy</a></p>
+  </form>
+</section>
+
+<!-- ---------- plan ---------- -->
+<section class="plan" id="plan" hidden>
+  <div class="plan-top">
+    <img class="logo" src="logo-300.webp" srcset="logo-300.webp 2x, logo-450.webp 3x" alt="Hockey Lab" width="112" height="41" decoding="async">
+    <button type="button" id="restart">Start over</button>
+  </div>
+  <div class="plan-head anim">
+    <span class="eyebrow"><b>Free</b> &nbsp;·&nbsp; Your Hockey Lab plan</span>
+    <h1 id="ptitle">Your 2&#8209;week plan</h1>
+    <div class="chips" id="pchips"></div>
+  </div>
+
+  <div class="test anim">
+    <h3>Test your hands</h3>
+    <p>Count your clean stickhandling reps in 30 seconds. Do it on day 1, then again on day 14.</p>
+    <p class="more">This is 1 of the 4 Hockey Lab tests. All 4, plus the progress tracker, are inside the program.</p>
+    <div class="nums">
+      <label>Day 1<input id="t1" type="number" inputmode="numeric" min="0" max="999" placeholder="--"></label>
+      <label>Day 14<input id="t2" type="number" inputmode="numeric" min="0" max="999" placeholder="--"></label>
+      <span class="gain" id="tgain" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist" id="ptabs"></div>
+  <div id="pweek"></div>
+
+  <div class="next anim" id="next">
+    <span class="eyebrow"><b>After week 2</b> &nbsp;·&nbsp; Puck Control Academy</span>
+    <h2>Your next rep.</h2>
+    <p class="plain">This is the simplest part of the system. The full version is inside the program.</p>
+    <table class="vs">
+      <thead><tr><th></th><th>Free plan</th><th>Puck Control Academy</th></tr></thead>
+      <tbody>
+        <tr><th>Weeks</th><td>2</td><td>The weekly system to keep building after week 2</td></tr>
+        <tr><th>Drills</th><td>Names + times</td><td>Every drill broken down on video. 6 modules, 18 videos</td></tr>
+        <tr><th>Tests</th><td>1 test</td><td>All 4 tests + progress tracker, retest every 4 weeks</td></tr>
+      </tbody>
+    </table>
+    <!-- [PLACEHOLDER: Wyatt's upsell video] -->
+    <div class="vsl">Wyatt's video goes here</div>
+    <!-- [PLACEHOLDER: Whop checkout link] -->
+    <a class="btn" href="#">Get the full program · $48
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+  <p class="plan-foot">Every drill in this plan comes from Wyatt's own Hockey Lab workouts.</p>
+</section>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
