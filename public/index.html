@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hockey Lab: Free Stickhandling Workout Creator</title>
 <meta name="description" content="Answer 5 quick questions and get a day-by-day stickhandling plan for the rink, the gym or your garage, built from Wyatt Beck's own Hockey Lab drills. Free.">
-<meta name="theme-color" content="#0c1a13">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230c1a13%22/%3E%3Cpath%20d%3D%22M26%2014h12v6l9%2024a4%204%200%200%201-4%206H21a4%204%200%200%201-4-6l9-24z%22%20fill%3D%22none%22%20stroke%3D%22%23eef2ec%22%20stroke-width%3D%224%22/%3E%3C/svg%3E">
 <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
@@ -41,7 +40,8 @@ p { margin: 0; }
 .screen { position: relative; height: 100svh; display: flex; flex-direction: column; padding: 0 var(--gut) env(safe-area-inset-bottom); }
 
 /* clip: full-bleed behind everything on phones, its own frame on desktop */
-.clip { position: absolute; inset: 0; background: var(--bg-2) url(clips/hero.jpg) center 30% / cover; }
+.clip { position: fixed; left: 0; right: 0; top: calc(-1 * env(safe-area-inset-top, 0px)); height: calc(100lvh + env(safe-area-inset-top, 0px)); background: var(--bg-2) url(clips/hero.jpg) center 30% / cover; }
+#landing[hidden] .clip { display: none; }
 .clip video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s var(--out); }
 .clip video.on { opacity: 1; }
 .clip video { will-change: opacity; }
@@ -95,7 +95,7 @@ h1 span { display: block; color: var(--lab); }
   .offer { grid-column: 1; grid-row: 2; margin: 0; align-self: center; padding-bottom: 40px; }
   .btn { display: inline-flex; width: auto; }
   .micro { text-align: left; }
-  .clip { grid-column: 2; grid-row: 2; position: relative; inset: auto; z-index: 1; align-self: center; justify-self: end; width: min(100%, 440px); max-height: calc(100svh - 160px); aspect-ratio: 4 / 5; margin-bottom: 40px; border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 40px 80px -40px rgb(0 0 0 / .7), 0 30px 90px -50px rgb(143 220 110 / .35); }
+  .clip { grid-column: 2; grid-row: 2; position: relative; inset: auto; top: auto; height: auto; z-index: 1; align-self: center; justify-self: end; width: min(100%, 440px); max-height: calc(100svh - 160px); aspect-ratio: 4 / 5; margin-bottom: 40px; border-radius: 22px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 40px 80px -40px rgb(0 0 0 / .7), 0 30px 90px -50px rgb(143 220 110 / .35); }
   .clip::after { background: linear-gradient(180deg, transparent 60%, rgb(12 26 19 / .7)); }
   .clip .tag { display: block; left: 20px; bottom: 18px; }
   .clip video { object-position: center 30%; }
