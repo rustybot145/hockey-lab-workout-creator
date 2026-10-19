@@ -11,20 +11,38 @@ let answers = store.get("hl-answers") || {};
 const save = () => store.set("hl-answers", answers);
 const query = () => new URLSearchParams({ ...answers, where: (answers.where || []).join(",") });
 
-/* landing clip */
+/* landing clip: must start on the very first load in every browser
+   (Chrome, Safari, Chrome/Google app on iOS, in-app browsers, Low Power Mode) */
 const clips = [...document.querySelectorAll("#landing .clip video")];
 const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let ci = 0;
-function playClip(i) {
-  ci = i;
-  clips.forEach((c, k) => c.classList.toggle("on", k === i));
-  $("ctag").innerHTML = clips[i].dataset.tag;
-  if (still) return; // reduced motion: show the poster, don't play
-  clips[i].currentTime = 0; clips[i].play().catch(() => {});
-  const next = clips[(i + 1) % clips.length];
-  if (next.preload !== "auto") { next.preload = "auto"; next.load(); } // warm the next one
+clips.forEach((v) => { v.muted = true; v.defaultMuted = true; v.playsInline = true; }); // properties, not just attributes (some engines only check these)
+let ci = 0, wantPlay = false;
+function tryPlay() {
+  const v = clips[ci];
+  if (still || !wantPlay || !v.paused || v.ended) return;
+  const p = v.play();
+  if (p) p.catch(() => {}); // refused (Low Power Mode, data saver, in-app browser): the hooks below retry
 }
-clips.forEach((c, i) => c.addEventListener("ended", () => playClip((i + 1) % clips.length)));
+function warmNext() { const n = clips[(ci + 1) % clips.length]; if (n.preload !== "auto") { n.preload = "auto"; n.load(); } }
+function playClip(i) {
+  const v = clips[i];
+  if (i !== ci || v.ended) v.currentTime = 0;
+  ci = i; wantPlay = true;
+  clips.forEach((c, k) => { c.classList.toggle("on", k === i); if (k !== i && !c.paused) c.pause(); });
+  $("ctag").innerHTML = v.dataset.tag;
+  if (still) return; // reduced motion: show the poster, don't play
+  tryPlay();
+  v.addEventListener("playing", warmNext, { once: true }); // fetch the next clip only once this one runs, so they don't fight for bandwidth
+}
+function stopClips() { wantPlay = false; clips.forEach((c) => c.pause()); }
+clips.forEach((c, i) => {
+  c.addEventListener("ended", () => playClip((i + 1) % clips.length));
+  for (const ev of ["loadedmetadata", "loadeddata", "canplay", "suspend", "stalled"]) c.addEventListener(ev, () => { if (i === ci) tryPlay(); });
+});
+for (const ev of ["pointerdown", "touchstart", "keydown", "scroll"]) addEventListener(ev, tryPlay, { passive: true });
+document.addEventListener("visibilitychange", () => { if (!document.hidden) tryPlay(); });
+addEventListener("pageshow", tryPlay); // back/forward cache restore
+setInterval(tryPlay, 1200); // watchdog: no-op while playing
 
 /* quiz */
 function showQuestion(i) {
@@ -117,7 +135,7 @@ function route() {
   else if (h.startsWith("plan?")) { view = "plan"; week = 0; showPlan(new URLSearchParams(h.slice(5))); }
   for (const [k, el] of Object.entries(views)) el.hidden = k !== view;
   document.body.classList.toggle("lock", view !== "plan");
-  if (view === "landing") playClip(ci); else clips.forEach((c) => c.pause());
+  if (view === "landing") playClip(ci); else stopClips();
   scrollTo(0, 0);
 }
 addEventListener("hashchange", route);
