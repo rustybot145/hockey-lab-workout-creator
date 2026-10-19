@@ -15,7 +15,7 @@ for (const pos of opts("pos")) for (const age of opts("age")) for (const level o
       assert(w.sessions.length >= 3);
       assert.equal(w.sessions.length + w.rest.length, 7);
       const total = w.sessions.reduce((s, x) => s + x.minutes, 0);
-      assert(total >= Number(time) && total <= Math.max(Number(time), 180), `minutes ${total} vs ${time}`);
+      assert.equal(total, Number(time), `week totals ${total} min for a ${time} min answer`);
       for (const s of w.sessions) { const used = s.drills.reduce((m, d) => m + (/min$/.test(d.amt) ? parseInt(d.amt) : 0), 0); assert(used <= s.minutes, `${used} min of drills in a ${s.minutes} min session`); }
       for (const s of w.sessions) {
         assert(where.map((x) => ({ home: "Home", rink: "Rink", gym: "Gym" })[x]).includes(s.place));

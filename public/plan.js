@@ -47,13 +47,13 @@ export const QUESTIONS = [
   { id: "pos", q: "What position do you play?", opts: [["F", "Forward"], ["D", "Defense"]] },
   { id: "age", q: "How old are you?", opts: [["u13", "12 or under"], ["13", "13 to 15"], ["16", "16 to 18"], ["adult", "19 or older"]] },
   { id: "level", q: "What level do you play?", opts: [["new", "Just starting"], ["rec", "House or rec"], ["comp", "A or AA"], ["elite", "AAA or higher"]] },
-  { id: "time", q: "How much time can you train each week?", help: "On your own, outside team practice.", opts: [["30", "30 minutes"], ["60", "1 hour"], ["120", "2 hours"], ["180", "3 hours or more"]] },
+  { id: "time", q: "How much time can you train each week?", help: "On your own, outside team practice.", opts: [["60", "1 hour"], ["120", "2 hours"], ["180", "3 hours"], ["300", "5 hours or more"]] },
   { id: "where", q: "Where can you train?", help: "Pick all that work.", multi: true, opts: [["home", "At home"], ["rink", "At the rink"], ["gym", "At the gym"]] },
 ];
 const valid = (id, v) => QUESTIONS.find((q) => q.id === id).opts.some(([k]) => k === v);
 
-// sessions per week × minutes, from the time they have (Wyatt's workouts are 10, 20 and 30 minutes)
-const SCHEDULE = { 30: [3, 10], 60: [3, 20], 120: [4, 30], 180: [6, 30] };
+// sessions per week × minutes, from the time they have (Wyatt's workouts run 10-30 min; longer sessions give each drill more time)
+const SCHEDULE = { 60: [3, 20], 120: [4, 30], 180: [6, 30], 300: [6, 50] };
 const DAYS = { 3: ["Mon", "Wed", "Sat"], 4: ["Mon", "Tue", "Thu", "Sat"], 6: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] };
 const WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const PLACE = { home: "Home", rink: "Rink", gym: "Gym" };
@@ -69,7 +69,7 @@ const TIER = { new: 0, rec: 0, comp: 1, elite: 2 };
 function workoutFor(place, minutes, tier, week) {
   if (place === "gym") return "feet";
   if (place === "rink") return LADDER.rink[Math.min(tier + week, 2)];
-  const steps = LADDER.home[minutes] || LADDER.home[20];
+  const steps = LADDER.home[minutes] || LADDER.home[minutes >= 30 ? 30 : 20];
   return steps[Math.min(tier + week, steps.length - 1)];
 }
 
