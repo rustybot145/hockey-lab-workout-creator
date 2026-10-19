@@ -2,7 +2,7 @@
 
 Free lead magnet for Wyatt Beck's Hockey Lab ([@whockeylab](https://www.instagram.com/whockeylab/)), built by Truepoint Digital.
 
-Landing → 5 questions → email → a 2-week, day-by-day stickhandling plan → the Puck Control Academy.
+Landing → 5 questions → email → a 1-week, day-by-day stickhandling plan (week 2 locked) → the Puck Control Academy.
 
 - **Rule-based, no AI, no database, no accounts.** Answers live in the URL (`#plan?pos=F&age=13&...`), and `public/plan.js` rebuilds the plan from them.
 - Every drill and its order comes from the on-screen captions of Wyatt's own Instagram workouts; each session links to the reel it came from.

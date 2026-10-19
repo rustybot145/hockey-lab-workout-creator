@@ -106,7 +106,8 @@ export function buildPlan(a) {
   const days = DAYS[n];
   const order = ["home", "rink", "gym"].filter((p) => a.where.includes(p));
   const tier = TIER[a.level];
-  const weeks = [0, 1].map((week) => {
+  // free plan = week 1 only; week 2 and on are the paid program
+  const weeks = [0].map((week) => {
     const seen = {}; // second visit to the same place that week gets his next workout up, so days don't repeat
     const sessions = days.map((day, i) => {
       const place = order[i % order.length];

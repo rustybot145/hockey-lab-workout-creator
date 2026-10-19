@@ -10,7 +10,7 @@ for (const pos of opts("pos")) for (const age of opts("age")) for (const level o
     const a = parse(new URLSearchParams({ pos, age, level, time, where: where.join(",") }));
     assert(a, "valid answers parse");
     const p = buildPlan(a);
-    assert.equal(p.weeks.length, 2);
+    assert.equal(p.weeks.length, 1, "free plan is 1 week");
     for (const w of p.weeks) {
       assert(w.sessions.length >= 3);
       assert.equal(w.sessions.length + w.rest.length, 7);

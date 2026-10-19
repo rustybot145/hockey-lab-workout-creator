@@ -38,14 +38,15 @@ p { margin: 0; }
 ::selection { background: var(--lab); color: var(--bg); }
 :focus-visible { outline: 2px solid var(--lab); outline-offset: 3px; border-radius: 4px; }
 
-.screen { position: relative; height: 100svh; display: flex; flex-direction: column; padding: 0 var(--gut) env(safe-area-inset-bottom); }
+.screen { position: relative; height: 100svh; height: 100dvh; display: flex; flex-direction: column; padding: 0 var(--gut) env(safe-area-inset-bottom); }
 
 /* clip: full-bleed behind everything on phones, its own frame on desktop */
 .clip { position: fixed; left: 0; right: 0; top: calc(-1 * env(safe-area-inset-top, 0px)); height: calc(100lvh + env(safe-area-inset-top, 0px)); background: var(--bg) url(clips/hero.jpg) center 30% / cover; }
 #landing[hidden] .clip { display: none; }
 .clip video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s var(--out); }
-.clip video.on { opacity: 1; }
+.clip video.live { opacity: 1; } /* only once it's actually playing: hides WebKit's native play button, poster shows until then */
 .clip video { will-change: opacity; }
+.clip video::-webkit-media-controls, .clip video::-webkit-media-controls-start-playback-button, .clip video::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; }
 .clip video:first-of-type { transition-duration: .35s; } /* first clip shows up right away */
 .clip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, var(--bg) 0%, rgb(12 26 19 / .6) 8%, rgb(12 26 19 / .15) 22%, rgb(12 26 19 / .35) 42%, rgb(12 26 19 / .92) 64%, var(--bg) 80%); }
 .clip video { object-position: var(--pos, 18% 30%); } /* phones: keep Wyatt in shot, per clip */
@@ -57,13 +58,13 @@ p { margin: 0; }
 .top a.ig { font-size: .875rem; color: var(--mute); text-decoration: none; padding: 12px 0; transition: color .2s; }
 .top a.ig:hover { color: var(--ink); }
 
-.offer { position: relative; z-index: 2; margin-top: auto; padding-bottom: max(56px, 11svh); max-width: 560px; }
+.offer { position: relative; z-index: 2; margin-top: auto; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); max-width: 560px; }
 .eyebrow { display: block; font: 600 .75rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--mute); }
 .eyebrow b { color: var(--lab); font-weight: 600; }
-h1 { margin: 14px 0 14px; font: 900 clamp(2.9rem, 13.5vw, 6.6rem)/.94 var(--display); text-transform: uppercase; letter-spacing: -.005em; text-wrap: balance; }
+h1 { margin: 16px 0 16px; font: 900 clamp(2.9rem, 13.5vw, 6.6rem)/.94 var(--display); text-transform: uppercase; letter-spacing: -.005em; text-wrap: balance; }
 h1 span { display: block; color: var(--lab); }
-.lede { max-width: 32ch; font-size: 1.0625rem; color: var(--mute); }
-.btn { margin-top: 24px; display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px; min-height: 58px; padding: 0 30px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 1.0625rem/1 var(--body); text-decoration: none; box-shadow: 0 1px 0 rgb(255 255 255 / .5) inset, 0 18px 44px -16px rgb(143 220 110 / .6); transition: transform .35s var(--out); }
+.lede { max-width: 32ch; font-size: 1.125rem; line-height: 1.55; color: var(--mute); }
+.btn { margin-top: 28px; display: flex; width: 100%; align-items: center; justify-content: center; gap: 12px; min-height: 58px; padding: 0 30px; border-radius: 999px; background: var(--ink); color: var(--bg); font: 600 1.0625rem/1 var(--body); text-decoration: none; box-shadow: 0 1px 0 rgb(255 255 255 / .5) inset, 0 18px 44px -16px rgb(143 220 110 / .6); transition: transform .35s var(--out); }
 .btn svg { width: 18px; height: 18px; transition: transform .35s var(--out); }
 .btn { position: relative; isolation: isolate; }
 .btn::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 24px 52px -16px rgb(143 220 110 / .75); opacity: 0; transition: opacity .35s var(--out); }
@@ -111,7 +112,7 @@ h1 span { display: block; color: var(--lab); }
 /* ---------- flow: landing / quiz / email are one locked screen; the plan scrolls ---------- */
 body.lock { overflow: hidden; }
 [hidden] { display: none !important; }
-.step { position: relative; min-height: 100svh; max-width: 560px; margin: 0 auto; padding: 0 var(--gut) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+.step { position: relative; min-height: 100svh; min-height: 100dvh; max-width: 560px; margin: 0 auto; padding: 0 var(--gut) 20px; display: flex; flex-direction: column; }
 .step-top { display: flex; align-items: center; justify-content: space-between; height: 64px; flex: none; }
 .step-top .logo { width: 104px; }
 .back { display: inline-flex; align-items: center; gap: 6px; margin-left: -8px; padding: 10px 8px; border: 0; background: none; color: var(--mute); font: 500 .875rem/1 var(--body); cursor: pointer; border-radius: 8px; transition: color .2s; }
@@ -120,11 +121,11 @@ body.lock { overflow: hidden; }
 .count { font: 600 .75rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
 .bar { height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; flex: none; }
 .bar i { display: block; height: 100%; background: var(--lab); border-radius: 3px; transform-origin: 0 50%; transform: scaleX(0); transition: transform .6s var(--out); }
-.ask { margin: auto 0; padding: 20px 0 9svh; }
+.ask { margin-top: auto; padding: 24px 0 calc(8px + env(safe-area-inset-bottom, 0px)); }
 .ask h2 { margin: 0; font: 900 clamp(2.4rem, 10vw, 3.6rem)/.96 var(--display); text-transform: uppercase; text-wrap: balance; }
 .ask .help { margin-top: 10px; color: var(--mute); }
-.opts { display: grid; gap: 10px; margin-top: 26px; }
-.opt { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 60px; padding: 0 20px; border: 1px solid var(--line); border-radius: 16px; background: rgb(238 242 236 / .02); color: var(--ink); font: 500 1.0625rem/1.2 var(--body); text-align: left; cursor: pointer; transition: border-color .2s, background-color .2s, transform .25s var(--out); }
+.opts { display: grid; gap: 12px; margin-top: 28px; }
+.opt { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 64px; padding: 0 20px; border: 1px solid var(--line); border-radius: 16px; background: rgb(238 242 236 / .02); color: var(--ink); font: 500 1.0625rem/1.2 var(--body); text-align: left; cursor: pointer; transition: border-color .2s, background-color .2s, transform .25s var(--out); }
 .opt:hover { border-color: rgb(238 242 236 / .3); }
 .opt:active { transform: scale(.985); }
 .opt .mk { flex: none; width: 24px; height: 24px; border: 1.5px solid rgb(238 242 236 / .3); border-radius: 50%; display: grid; place-items: center; transition: background-color .2s, border-color .2s; }
@@ -194,23 +195,35 @@ body.lock { overflow: hidden; }
 .src a { color: var(--lab); text-underline-offset: 3px; }
 .rest { padding: 16px 0 0; font-size: .875rem; color: var(--dim); }
 
-.next { margin-top: 56px; padding: 28px 22px 24px; border-radius: 22px; background: radial-gradient(120% 80% at 100% 0%, rgb(143 220 110 / .14), transparent 60%), #132a1f; box-shadow: 0 0 0 1px var(--line); text-align: center; }
-.next h2 { margin: 12px 0 10px; font: 900 clamp(2.2rem, 9vw, 3.2rem)/.96 var(--display); text-transform: uppercase; }
-.next p { max-width: 38ch; margin: 0 auto; color: var(--mute); }
-.next p.plain { max-width: 30ch; color: var(--ink); font-size: 1.125rem; font-weight: 500; line-height: 1.5; }
+/* the paid program: the next item in the plan, not an ad */
+.next { margin-top: 48px; padding: 26px 20px 20px; border-radius: 24px; text-align: left;
+  background: radial-gradient(110% 70% at 100% 0%, rgb(143 220 110 / .16), transparent 60%), linear-gradient(180deg, #15301f, #10241a);
+  box-shadow: 0 0 0 1px rgb(143 220 110 / .22), 0 30px 70px -40px rgb(0 0 0 / .8); }
+.next h2 { margin: 12px 0 10px; font: 900 clamp(2.4rem, 11vw, 3.4rem)/.94 var(--display); text-transform: uppercase; }
+.next p.plain { max-width: 32ch; color: var(--ink); font-size: 1.0625rem; font-weight: 500; line-height: 1.5; }
+.vsl { position: relative; margin: 22px 0 0; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; display: grid; place-items: center;
+  background: linear-gradient(180deg, rgb(12 26 19 / .15), rgb(12 26 19 / .75)), url(clips/court.jpg) center 35% / cover; box-shadow: 0 0 0 1px var(--line); }
+.vsl .play { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: rgb(238 242 236 / .92); color: var(--bg); box-shadow: 0 10px 30px -8px rgb(0 0 0 / .6); }
+.vsl .play svg { width: 24px; height: 24px; margin-left: 3px; }
+.vsl .vsl-note { position: absolute; left: 14px; bottom: 12px; font-size: .75rem; color: var(--mute); }
+.have { margin-top: 18px; font-size: .8125rem; color: var(--dim); }
+.unlock-h { margin: 18px 0 4px; font: 800 1.15rem/1 var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--lab); }
+.unlock { list-style: none; margin: 0; padding: 0; }
+.unlock li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.unlock li:last-child { border-bottom: 0; }
+.unlock .ck { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgb(143 220 110 / .14); color: var(--lab); }
+.unlock .ck svg { width: 13px; height: 13px; }
+.unlock b { display: block; font-weight: 600; color: var(--ink); }
+.unlock li span:last-child { font-size: .875rem; color: var(--mute); line-height: 1.45; }
+.buy { display: grid; gap: 14px; margin-top: 16px; padding-top: 18px; border-top: 1px solid var(--line-2, rgb(238 242 236 / .22)); }
+.price { display: flex; align-items: baseline; gap: 10px; }
+.price b { font: 900 2.6rem/1 var(--display); }
+.price span { font-size: .75rem; color: var(--dim); letter-spacing: .08em; text-transform: uppercase; }
+.next .btn { width: 100%; margin: 0; }
 .test p.more { margin-top: -8px; font-size: .8125rem; color: var(--lab); }
 .tabs button.locked { display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: var(--dim); }
 .tabs button.locked svg { width: 14px; height: 14px; }
 .tabs button.locked:hover { color: var(--lab); }
-.vs { width: 100%; margin: 22px 0 4px; border-collapse: collapse; text-align: left; font-size: .875rem; }
-.vs th, .vs td { padding: 12px 8px; border-top: 1px solid var(--line); vertical-align: top; }
-.vs thead th { border-top: 0; font: 600 .6875rem/1.2 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
-.vs thead th:last-child { color: var(--lab); }
-.vs tbody th { width: 64px; font: 800 .95rem/1.4 var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
-.vs td { color: var(--dim); }
-.vs td:last-child { color: var(--ink); font-weight: 500; }
-.vsl { margin: 22px 0 6px; aspect-ratio: 16 / 9; border-radius: 16px; display: grid; place-items: center; border: 1.5px dashed rgb(238 242 236 / .2); color: var(--dim); font-size: .8125rem; }
-.next .btn { display: inline-flex; width: auto; margin-top: 18px; }
 .plan-foot { margin-top: 28px; text-align: center; font-size: .75rem; color: var(--dim); }
 
 /* soft green light behind the one-screen steps, like the landing */
@@ -288,17 +301,17 @@ body.lock { overflow: hidden; }
   </div>
   <div class="plan-head anim">
     <span class="eyebrow"><b>Free</b> &nbsp;·&nbsp; Your Hockey Lab plan</span>
-    <h1 id="ptitle">Your 2&#8209;week plan</h1>
+    <h1 id="ptitle">Your 1&#8209;week plan</h1>
     <div class="chips" id="pchips"></div>
   </div>
 
   <div class="test anim">
     <h3>Test your hands</h3>
-    <p>Count your clean stickhandling reps in 30 seconds. Do it on day 1, then again on day 14.</p>
+    <p>Count your clean stickhandling reps in 30 seconds. Do it on day 1, then again on day 7.</p>
     <p class="more">This is 1 of the 4 Hockey Lab tests. All 4, plus the progress tracker, are inside the program.</p>
     <div class="nums">
       <label>Day 1<input id="t1" type="number" inputmode="numeric" min="0" max="999" placeholder="--"></label>
-      <label>Day 14<input id="t2" type="number" inputmode="numeric" min="0" max="999" placeholder="--"></label>
+      <label>Day 7<input id="t2" type="number" inputmode="numeric" min="0" max="999" placeholder="--"></label>
       <span class="gain" id="tgain" aria-live="polite"></span>
     </div>
   </div>
@@ -306,25 +319,30 @@ body.lock { overflow: hidden; }
   <div class="tabs" role="tablist" id="ptabs"></div>
   <div id="pweek"></div>
 
-  <div class="next anim" id="next">
-    <span class="eyebrow"><b>After week 2</b> &nbsp;·&nbsp; Puck Control Academy</span>
-    <h2>Your next rep.</h2>
-    <p class="plain">This is the simplest part of the system. The full version is inside the program.</p>
-    <table class="vs">
-      <thead><tr><th></th><th>Free plan</th><th>Puck Control Academy</th></tr></thead>
-      <tbody>
-        <tr><th>Weeks</th><td>2</td><td>The weekly system to keep building after week 2</td></tr>
-        <tr><th>Drills</th><td>Names + times</td><td>Every drill broken down on video. 6 modules, 18 videos</td></tr>
-        <tr><th>Tests</th><td>1 test</td><td>All 4 tests + progress tracker, retest every 4 weeks</td></tr>
-      </tbody>
-    </table>
-    <!-- [PLACEHOLDER: Wyatt's upsell video] -->
-    <div class="vsl">Wyatt's video goes here</div>
-    <!-- [PLACEHOLDER: Whop checkout link] -->
-    <a class="btn" href="#">Get the full program · $48
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </a>
-  </div>
+  <section class="next anim" id="next" aria-labelledby="next-h">
+    <div class="next-head">
+      <span class="eyebrow"><b>Week 2</b> &nbsp;·&nbsp; Puck Control Academy</span>
+      <h2 id="next-h">Your next rep.</h2>
+      <p class="plain">This is the simplest part of the system. The full version is inside the program.</p>
+    </div>
+    <!-- [PLACEHOLDER: Wyatt's upsell video. Swap this frame for the real video when it's filmed.] -->
+    <div class="vsl" role="img" aria-label="Wyatt's program video, coming soon">
+      <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span>
+      <span class="vsl-note">Wyatt's video goes here</span>
+    </div>
+    <p class="have">Your free plan: 1 week, drill names and times, 1 test.</p>
+    <h3 class="unlock-h">What unlocks</h3>
+    <ul class="unlock">
+      <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span><span><b>Week 2 and on</b>The weekly system that keeps building after this week.</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span><span><b>Every drill on video</b>Broken down step by step. 6 modules, 18 videos.</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span><span><b>All 4 Hockey Lab tests</b>Plus the progress tracker. Retest every 4 weeks.</span></li>
+    </ul>
+    <div class="buy">
+      <div class="price"><b>$48</b><span>Full program</span></div>
+      <!-- [PLACEHOLDER: Whop checkout link] -->
+      <a class="btn" href="#">Unlock the program <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </section>
   <p class="plan-foot">Every drill in this plan comes from Wyatt's own Hockey Lab workouts.</p>
 </section>
 

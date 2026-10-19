@@ -30,13 +30,14 @@ function playClip(i) {
   ci = i; wantPlay = true;
   clips.forEach((c, k) => { c.classList.toggle("on", k === i); if (k !== i && !c.paused) c.pause(); });
   $("ctag").innerHTML = v.dataset.tag;
-  if (still) return; // reduced motion: show the poster, don't play
+  if (still) { clips.forEach((c, k) => c.classList.toggle("live", k === i)); return; } // reduced motion: show the poster, don't play
   tryPlay();
   v.addEventListener("playing", warmNext, { once: true }); // fetch the next clip only once this one runs, so they don't fight for bandwidth
 }
 function stopClips() { wantPlay = false; clips.forEach((c) => c.pause()); }
 clips.forEach((c, i) => {
   c.addEventListener("ended", () => playClip((i + 1) % clips.length));
+  c.addEventListener("playing", () => clips.forEach((o, k) => o.classList.toggle("live", k === i))); // crossfade in only when moving
   for (const ev of ["loadedmetadata", "loadeddata", "canplay", "suspend", "stalled"]) c.addEventListener(ev, () => { if (i === ci) tryPlay(); });
 });
 for (const ev of ["pointerdown", "touchstart", "keydown", "scroll"]) addEventListener(ev, tryPlay, { passive: true });
@@ -100,10 +101,10 @@ function showPlan(params) {
   if (!a) { location.hash = ""; return; }
   plan = buildPlan(a);
   const name = store.get("hl-name");
-  $("ptitle").textContent = name ? `${name}'s 2\u2011week plan` : "Your 2\u2011week plan";
+  $("ptitle").textContent = name ? `${name}'s 1\u2011week plan` : "Your 1\u2011week plan";
   $("pchips").innerHTML = plan.summary.map((s) => `<span>${esc(s)}</span>`).join("");
   $("ptabs").innerHTML = plan.weeks.map((w, i) => `<button type="button" role="tab" data-w="${i}" aria-selected="${i === week}">${w.label}</button>`).join("")
-    + `<button type="button" class="locked" id="tlock" aria-label="Week 3 and on, inside the program">Week 3+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>`;
+    + `<button type="button" class="locked" id="tlock" aria-label="Week 2 is inside the program">Week 2 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>`;
   $("ptabs").querySelectorAll("button[data-w]").forEach((b) => b.addEventListener("click", () => { week = +b.dataset.w; showPlan(params); }));
   $("tlock").addEventListener("click", () => $("next").scrollIntoView({ behavior: "smooth", block: "start" }));
   const w = plan.weeks[week];
