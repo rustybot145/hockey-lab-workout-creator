@@ -1,4 +1,4 @@
-// node test.js: every answer combination must give a full, sensible 2-week plan.
+// node test.js: every answer combination must give a simple, consistent 1-week plan.
 import assert from "node:assert";
 import { QUESTIONS, buildPlan, parse } from "./public/plan.js";
 
@@ -10,22 +10,21 @@ for (const pos of opts("pos")) for (const age of opts("age")) for (const level o
     const a = parse(new URLSearchParams({ pos, age, level, time, where: where.join(",") }));
     assert(a, "valid answers parse");
     const p = buildPlan(a);
-    assert.equal(p.weeks.length, 1, "free plan is 1 week");
-    for (const w of p.weeks) {
-      assert(w.sessions.length >= 3);
-      assert.equal(w.sessions.length + w.rest.length, 7);
-      const total = w.sessions.reduce((s, x) => s + x.minutes, 0);
-      assert.equal(total, Number(time), `week totals ${total} min for a ${time} min answer`);
-      for (const s of w.sessions) { const used = s.drills.reduce((m, d) => m + (/min$/.test(d.amt) ? parseInt(d.amt) : 0), 0); assert(used <= s.minutes, `${used} min of drills in a ${s.minutes} min session`); }
-      for (const s of w.sessions) {
-        assert(where.map((x) => ({ home: "Home", rink: "Rink", gym: "Gym" })[x]).includes(s.place));
-        assert(s.drills.length >= 3 && s.drills.length <= 12, `${s.drills.length} drills`);
-        for (const d of s.drills) assert(d.name && d.amt && d.reel.startsWith("https://www.instagram.com/reel/"), JSON.stringify(d));
-        assert.equal(new Set(s.drills.map((d) => d.name)).size, s.drills.length, `duplicate drill in ${s.workout}`);
-      }
-    }
+    assert.equal(p.sessions.length + p.rest.length, 7);
+    assert.equal(p.sessions.reduce((s, x) => s + x.minutes, 0), Number(time), "week totals the time picked");
+    for (const s of p.sessions) assert(where.map((x) => ({ home: "Home", rink: "Rink", gym: "Gym" })[x]).includes(s.place));
+    const w = p.workout;
+    assert.equal(w.drills.length, 4, "same 4 drills every session");
+    assert(w.reel.startsWith("https://www.instagram.com/reel/"));
+    const mins = w.drills.filter((d) => /min$/.test(d.amt)).map((d) => parseInt(d.amt));
+    assert(mins.every((m) => m >= 5), "each timed drill gets at least 5 min");
+    assert(mins.reduce((x, y) => x + y, 0) <= w.minutes, "timed drills fit the session");
+    assert(/^\d+ each side$/.test(w.drills[2].amt));
     n++;
   }
+// more time or a higher level never means fewer reps
+const reps = (level, time) => parseInt(buildPlan(parse(new URLSearchParams({ pos: "F", age: "13", level, time, where: "home" }))).workout.drills[2].amt);
+assert(reps("rec", "60") <= reps("rec", "300") && reps("rec", "60") <= reps("elite", "60"));
 assert.equal(parse(new URLSearchParams("pos=X&age=13&level=rec&time=60&where=home")), null, "bad input rejected");
 assert.equal(parse(new URLSearchParams("pos=F&age=13&level=rec&time=60&where=")), null, "no place rejected");
 console.log(`ok: ${n} combinations`);

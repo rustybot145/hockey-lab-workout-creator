@@ -3,7 +3,6 @@ import { QUESTIONS, buildPlan, parse } from "./plan.js";
 
 const $ = (id) => document.getElementById(id);
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
-const CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const store = { get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch { return null; } },
                 set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch {} } };
@@ -94,8 +93,8 @@ $("eform").addEventListener("submit", (e) => {
   location.hash = "#plan?" + query();
 });
 
-/* plan */
-let plan, week = 0;
+/* plan: one simple workout, the same every session */
+let plan;
 function showPlan(params) {
   const a = parse(params);
   if (!a) { location.hash = ""; return; }
@@ -103,18 +102,17 @@ function showPlan(params) {
   const name = store.get("hl-name");
   $("ptitle").textContent = name ? `${name}'s 1\u2011week plan` : "Your 1\u2011week plan";
   $("pchips").innerHTML = plan.summary.map((s) => `<span>${esc(s)}</span>`).join("");
-  $("ptabs").innerHTML = plan.weeks.map((w, i) => `<button type="button" role="tab" data-w="${i}" aria-selected="${i === week}">${w.label}</button>`).join("")
+  $("ptabs").innerHTML = `<button type="button" role="tab" aria-selected="true">Week 1</button>`
     + `<button type="button" class="locked" id="tlock" aria-label="Week 2 is inside the program">Week 2 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></button>`;
-  $("ptabs").querySelectorAll("button[data-w]").forEach((b) => b.addEventListener("click", () => { week = +b.dataset.w; showPlan(params); }));
   $("tlock").addEventListener("click", () => $("next").scrollIntoView({ behavior: "smooth", block: "start" }));
-  const w = plan.weeks[week];
-  $("pweek").innerHTML = `<div class="days">${w.sessions.map((s, i) => `
-      <details class="day"${i === 0 ? " open" : ""}>
-        <summary><b>${s.day}</b><span>${s.place} · ${s.minutes} min<small>${s.drills.length} drills</small></span>${CHEV}</summary>
-        <ol class="drills">${s.drills.map((d) => `<li><span class="n">${esc(d.name)}</span><span class="a">${esc(d.amt)}</span></li>`).join("")}</ol>
-        <p class="src">From Wyatt's "${esc(s.workout)}" · <a href="${s.reel}" target="_blank" rel="noopener">Watch it</a></p>
-      </details>`).join("")}</div>
-    <p class="rest">Rest or team practice: ${w.rest.join(", ")}</p>`;
+  const w = plan.workout;
+  $("pweek").innerHTML = `
+    <h3 class="pl-h">Your week</h3>
+    <ol class="sched">${plan.sessions.map((s) => `<li><b>${s.day}</b><span>${s.place}</span><span class="a">${s.minutes} min</span></li>`).join("")}</ol>
+    <p class="rest">Rest or team practice: ${plan.rest.join(", ")}</p>
+    <h3 class="pl-h">Every session <span>· ${w.minutes} min</span></h3>
+    <ol class="drills flat">${w.drills.map((d) => `<li><span class="n">${esc(d.name)}</span><span class="a">${esc(d.amt)}</span>${d.cue ? `<span class="c">${esc(d.cue)}</span>` : ""}</li>`).join("")}</ol>
+    <p class="src">Wyatt's "${esc(w.title)}" workout · <a href="${w.reel}" target="_blank" rel="noopener">Watch it</a></p>`;
 }
 const tests = store.get("hl-test") || {};
 $("t1").value = tests.t1 ?? ""; $("t2").value = tests.t2 ?? "";
@@ -124,7 +122,7 @@ function gain() {
   $("tgain").textContent = Number.isFinite(a) && Number.isFinite(b) ? `${b - a >= 0 ? "+" : ""}${b - a} reps` : "";
 }
 ["t1", "t2"].forEach((id) => $(id).addEventListener("input", gain)); gain();
-$("restart").addEventListener("click", () => { answers = {}; save(); week = 0; location.hash = ""; });
+$("restart").addEventListener("click", () => { answers = {}; save(); location.hash = ""; });
 
 /* router: #q1..#q5, #email, #plan?..., else landing */
 function route() {
@@ -133,7 +131,7 @@ function route() {
   let view = "landing";
   if (/^q[1-5]$/.test(h)) { view = "quiz"; showQuestion(+h.slice(1) - 1); }
   else if (h === "email") { view = Object.keys(answers).length >= QUESTIONS.length ? "email" : "landing"; if (view === "email") showEmail(); }
-  else if (h.startsWith("plan?")) { view = "plan"; week = 0; showPlan(new URLSearchParams(h.slice(5))); }
+  else if (h.startsWith("plan?")) { view = "plan"; showPlan(new URLSearchParams(h.slice(5))); }
   for (const [k, el] of Object.entries(views)) el.hidden = k !== view;
   document.body.classList.toggle("lock", view !== "plan");
   if (view === "landing") playClip(ci); else stopClips();

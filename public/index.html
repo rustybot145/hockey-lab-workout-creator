@@ -173,27 +173,25 @@ body.lock { overflow: hidden; }
 .tabs button { flex: 1; height: 44px; border: 0; border-radius: 999px; background: none; color: var(--mute); font: 800 1.05rem/1 var(--display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; transition: background-color .25s, color .25s; }
 .tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
 
-.days { border-top: 1px solid var(--line); }
-.day { border-bottom: 1px solid var(--line); interpolate-size: allow-keywords; }
-.day::details-content { height: 0; overflow: clip; transition: height .45s var(--out), content-visibility .45s allow-discrete; }
-.day[open]::details-content { height: auto; }
-.day summary { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 12px; min-height: 72px; list-style: none; cursor: pointer; }
-.day summary::-webkit-details-marker { display: none; }
-.day summary b { font: 900 1.7rem/1 var(--display); text-transform: uppercase; }
-.day summary span { font-weight: 500; }
-.day summary small { display: block; margin-top: 3px; font-size: .8125rem; font-weight: 400; color: var(--dim); }
-.day summary svg { width: 20px; height: 20px; color: var(--dim); transition: transform .35s var(--out); }
-.day[open] summary svg { transform: rotate(180deg); color: var(--lab); }
-.day summary:hover b { color: var(--lab); }
-.drills { list-style: none; margin: 0 0 18px; padding: 0 0 0 76px; counter-reset: d; }
 .drills li { display: grid; grid-template-columns: 1fr auto; gap: 2px 14px; padding: 10px 0; border-top: 1px dashed var(--line); counter-increment: d; }
 .drills li:first-child { border-top: 0; }
 .drills .n { font-weight: 500; }
 .drills .n::before { content: counter(d) ". "; color: var(--dim); }
 .drills .a { font: 800 1rem/1.5 var(--display); letter-spacing: .03em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
-.src { margin: 0 0 18px 76px; font-size: .8125rem; color: var(--dim); }
 .src a { color: var(--lab); text-underline-offset: 3px; }
 .rest { padding: 16px 0 0; font-size: .875rem; color: var(--dim); }
+.pl-h { margin: 28px 0 10px; font: 800 1.35rem/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
+.pl-h span { color: var(--dim); }
+.sched { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.sched li { display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 12px; min-height: 56px; border-bottom: 1px solid var(--line); }
+.sched b { font: 900 1.6rem/1 var(--display); text-transform: uppercase; }
+.sched span { font-weight: 500; }
+.sched .a, .drills.flat .a { font: 800 1rem/1.5 var(--display); letter-spacing: .03em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+.drills.flat { padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.drills.flat li { padding: 14px 0; border-top: 0; border-bottom: 1px solid var(--line); }
+.drills.flat .n { font-size: 1.0625rem; }
+.drills.flat .c { grid-column: 1 / -1; font-size: .8125rem; color: var(--dim); }
+.plan .src { margin: 12px 0 0; }
 
 /* the paid program: the next item in the plan, not an ad */
 .next { margin-top: 48px; padding: 26px 20px 20px; border-radius: 24px; text-align: left;
