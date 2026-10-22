@@ -10,6 +10,7 @@
 <link rel="preload" href="fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="clips/hero.jpg" as="image" fetchpriority="high">
+<link rel="modulepreload" href="plan.js">
 <style>
 /* ---------- fonts: self-hosted variable fonts (SIL OFL, see fonts/) ---------- */
 @font-face { font-family: "Big Shoulders Display"; src: url(fonts/big-shoulders.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
@@ -37,7 +38,7 @@
 /* ---------- base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; } /* our own :active states replace the grey tap flash */
 body.lock { overflow: hidden; } /* landing, quiz and email are one fixed screen; only the plan scrolls */
 [hidden] { display: none !important; }
 img, video { display: block; max-width: 100%; }
@@ -56,10 +57,8 @@ p, figure { margin: 0; }
 .btn::after { /* hover glow: animate this layer's opacity, never box-shadow itself */
   content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 24px 52px -16px rgb(143 220 110 / .75); opacity: 0; transition: opacity .35s var(--out); }
 .btn svg { width: 18px; height: 18px; transition: transform .35s var(--out); }
-.btn:hover { transform: translateY(-2px); }
-.btn:hover::after { opacity: 1; }
-.btn:hover svg { transform: translateX(4px); }
-.btn:active { transform: scale(.98); }
+.btn:active { transform: scale(.97); }
+.btn:active svg { transform: translateX(4px); }
 .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
 
 /* entrances: transform + opacity only */
@@ -67,6 +66,19 @@ p, figure { margin: 0; }
 .rise { animation: rise 1s var(--out) both; }
 .d1 { animation-delay: .08s; } .d2 { animation-delay: .16s; } .d3 { animation-delay: .26s; }
 .anim { animation: rise .7s var(--out) both; }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--out), transform .7s var(--out); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* hover only where there's a mouse: on touch screens :hover sticks after a tap */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-2px); }
+  .btn:hover::after { opacity: 1; }
+  .btn:hover svg { transform: translateX(4px); }
+  .btn:active { transform: scale(.98); }
+  .back:hover, .plan-top button:hover { color: var(--ink); }
+  .opt:hover { border-color: var(--line-3); }
+  .tabs .locked:hover { color: var(--lab); }
+}
 
 /* ---------- landing: one screen, one offer ---------- */
 .screen { position: relative; height: 100svh; height: 100dvh; display: flex; flex-direction: column; padding: 0 var(--gut) env(safe-area-inset-bottom); }
@@ -80,7 +92,7 @@ p, figure { margin: 0; }
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, var(--bg) 0%, rgb(12 26 19 / .6) 8%, rgb(12 26 19 / .15) 22%, rgb(12 26 19 / .35) 42%, rgb(12 26 19 / .92) 64%, var(--bg) 80%); }
 .clip video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 18% 30%);
-  opacity: 0; transition: opacity 1s var(--out); will-change: opacity; }
+  opacity: 0; transition: opacity 1s var(--out); }
 .clip video:first-of-type { transition-duration: .35s; }
 .clip video.live { opacity: 1; } /* set on "playing": the poster shows until then, which also hides WebKit's native play button */
 .clip video::-webkit-media-controls, .clip video::-webkit-media-controls-start-playback-button, .clip video::-webkit-media-controls-overlay-play-button { display: none !important; -webkit-appearance: none; }
@@ -100,7 +112,7 @@ h1 span { display: block; color: var(--lab); }
 .step-top { display: flex; align-items: center; justify-content: space-between; height: 64px; flex: none; }
 .step-top .logo { width: 104px; }
 .back { display: inline-flex; align-items: center; gap: 6px; margin-left: -8px; padding: 10px 8px; border: 0; border-radius: 8px; background: none; color: var(--mute); font: 500 .875rem/1 var(--body); cursor: pointer; transition: color .2s; }
-.back:hover { color: var(--ink); }
+.back:active { color: var(--ink); }
 .back svg { width: 16px; height: 16px; }
 .count { font: 600 .75rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
 .bar { flex: none; height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
@@ -116,14 +128,13 @@ h1 span { display: block; color: var(--lab); }
 .opt { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 64px; padding: 0 20px; border: 1px solid var(--line); border-radius: 16px;
   background: rgb(238 242 236 / .02); color: var(--ink); font: 500 1.0625rem/1.2 var(--body); text-align: left; cursor: pointer;
   transition: border-color .2s, background-color .2s, transform .25s var(--out); }
-.opt:hover { border-color: var(--line-3); }
-.opt:active { transform: scale(.985); }
+.opt:active { transform: scale(.975); border-color: var(--line-3); }
 .opt .mk { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border: 1.5px solid var(--line-3); border-radius: 50%; transition: background-color .2s, border-color .2s; }
 .opt.multi .mk { border-radius: 7px; }
-.opt .mk svg { width: 13px; height: 13px; color: var(--bg); opacity: 0; }
+.opt .mk svg { width: 13px; height: 13px; color: var(--bg); opacity: 0; transform: scale(.4); transition: opacity .15s, transform .35s var(--out); }
 .opt[aria-pressed="true"] { border-color: var(--lab); background: rgb(143 220 110 / .08); }
 .opt[aria-pressed="true"] .mk { background: var(--lab); border-color: var(--lab); }
-.opt[aria-pressed="true"] .mk svg { opacity: 1; }
+.opt[aria-pressed="true"] .mk svg { opacity: 1; transform: none; } /* tick pops in on tap */
 
 .field { display: grid; gap: 8px; margin-top: 16px; }
 .field label { font: 600 .8125rem/1 var(--body); color: var(--mute); }
@@ -140,7 +151,7 @@ h1 span { display: block; color: var(--lab); }
 .plan-top { display: flex; align-items: center; justify-content: space-between; height: 72px; }
 .plan-top .logo { width: 112px; }
 .plan-top button { padding: 10px 0; border: 0; background: none; color: var(--mute); font: 500 .875rem/1 var(--body); cursor: pointer; }
-.plan-top button:hover { color: var(--ink); }
+.plan-top button:active { color: var(--ink); }
 .plan-head { padding: 28px 0; }
 .plan-head h1 { margin: 12px 0 14px; font-size: clamp(2.8rem, 12vw, 4.6rem); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -161,7 +172,7 @@ h1 span { display: block; color: var(--lab); }
 .tabs > * { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; border: 0; border-radius: 999px; background: none; color: var(--mute); font: 800 1.05rem/1 var(--display); letter-spacing: .06em; text-transform: uppercase; }
 .tabs .on { background: var(--ink); color: var(--bg); }
 .tabs .locked { color: var(--dim); cursor: pointer; transition: color .25s; }
-.tabs .locked:hover { color: var(--lab); }
+.tabs .locked:active { color: var(--lab); }
 .tabs .locked svg { width: 14px; height: 14px; }
 
 .pl-h { margin: 28px 0 10px; font: 800 1.35rem/1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
@@ -236,6 +247,9 @@ h1 span { display: block; color: var(--lab); }
   h1 { font-size: clamp(2.9rem, 9.5vh, 5.2rem); }
   .top { height: 72px; }
 }
+/* phones: the clip is the full-screen background, so it fades in place instead of sliding up */
+@keyframes fade { from { opacity: 0; } }
+@media (max-width: 899px) { .clip.rise { animation-name: fade; } }
 /* short phones (iPhone SE, Safari with toolbars): tighter so every question fits without scrolling */
 @media (max-width: 899px) and (max-height: 640px) {
   .step-top { height: 52px; }
@@ -250,7 +264,7 @@ h1 span { display: block; color: var(--lab); }
   .check { margin-top: 10px; }
   .fine { margin-top: 8px; }
 }
-@media (prefers-reduced-motion: reduce) { .rise, .anim { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .rise, .anim { animation: none; } .reveal { opacity: 1; transform: none; transition: none; } }
 </style>
 </head>
 <body>
@@ -265,8 +279,8 @@ h1 span { display: block; color: var(--lab); }
   <!-- three of Wyatt's own reels, crossfading: garage (DWSG6f6AeBC), outdoor court (DTi4TI_j0j9), street (DSEaH2rDFwX) -->
   <figure class="clip rise d2">
     <video src="clips/hero.mp4" poster="clips/hero.jpg" muted autoplay playsinline webkit-playsinline preload="auto" style="--pos: 18% 30%" data-tag="3 pucks <i>·</i> Figure eights" aria-label="Wyatt running figure eights between three pucks on garage tiles"></video>
-    <video src="clips/court.mp4" poster="clips/court.jpg" muted playsinline preload="none" style="--pos: 12% 30%" data-tag="7 drills <i>·</i> Home or ice" aria-label="Wyatt stickhandling on an outdoor sport court"></video>
-    <video src="clips/street.mp4" poster="clips/street.jpg" muted playsinline preload="none" style="--pos: 62% 30%" data-tag="Hockey <i>·</i> Therapy" aria-label="Wyatt stickhandling in the street outside his house"></video>
+    <video src="clips/court.mp4" muted playsinline preload="none" style="--pos: 12% 30%" data-tag="7 drills <i>·</i> Home or ice" aria-label="Wyatt stickhandling on an outdoor sport court"></video>
+    <video src="clips/street.mp4" muted playsinline preload="none" style="--pos: 62% 30%" data-tag="Hockey <i>·</i> Therapy" aria-label="Wyatt stickhandling in the street outside his house"></video>
     <span class="tag" id="ctag">3 pucks <i>·</i> Figure eights</span>
   </figure>
 
@@ -344,15 +358,19 @@ h1 span { display: block; color: var(--lab); }
     </button>
   </div>
 
-  <h2 class="pl-h">Your week</h2>
-  <ol class="sched" id="psched"></ol>
-  <p class="rest" id="prest"></p>
+  <div class="reveal">
+    <h2 class="pl-h">Your week</h2>
+    <ol class="sched" id="psched"></ol>
+    <p class="rest" id="prest"></p>
+  </div>
 
-  <h2 class="pl-h">Every session <span id="pmin"></span></h2>
-  <ol class="drills" id="pdrills"></ol>
-  <p class="src">Wyatt's <span id="pworkout"></span> workout · <a id="preel" target="_blank" rel="noopener">Watch it</a></p>
+  <div class="reveal">
+    <h2 class="pl-h">Every session <span id="pmin"></span></h2>
+    <ol class="drills" id="pdrills"></ol>
+    <p class="src">Wyatt's <span id="pworkout"></span> workout · <a id="preel" target="_blank" rel="noopener">Watch it</a></p>
+  </div>
 
-  <section class="next anim" id="next" aria-labelledby="next-h">
+  <section class="next reveal" id="next" aria-labelledby="next-h">
     <span class="eyebrow"><b>Week 2</b> &nbsp;·&nbsp; Puck Control Academy</span>
     <h2 id="next-h">Your next rep.</h2>
     <p class="plain">This is the simplest part of the system. The full version is inside the program.</p>

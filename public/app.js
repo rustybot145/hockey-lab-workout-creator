@@ -32,9 +32,13 @@ function tryPlay() {
   if (reducedMotion || !wantPlay || !v.paused || v.ended) return;
   v.play()?.catch(() => {}); // refused (still loading, Low Power Mode, in-app browser): the hooks below retry
 }
+// fetch the next clip only once this one is fully downloaded (or half played, since iOS can stop buffering early),
+// so on a phone connection the next clip never steals bandwidth and stalls the one on screen
 function warmNext() {
-  const next = clips[(current + 1) % clips.length];
-  if (next.preload !== "auto") { next.preload = "auto"; next.load(); }
+  const v = clips[current], next = clips[(current + 1) % clips.length];
+  if (next.preload === "auto" || !v.duration) return;
+  const end = v.buffered.length ? v.buffered.end(v.buffered.length - 1) : 0;
+  if (end >= v.duration - 0.25 || v.currentTime > v.duration / 2) { next.preload = "auto"; next.load(); }
 }
 function showLive(i) { clips.forEach((c, k) => c.classList.toggle("live", k === i)); } // crossfade
 function playClip(i) {
@@ -45,7 +49,6 @@ function playClip(i) {
   $("ctag").innerHTML = v.dataset.tag; // trusted, static markup from index.html
   if (reducedMotion) { showLive(i); return; } // show the poster, don't play
   tryPlay();
-  v.addEventListener("playing", warmNext, { once: true }); // fetch the next clip only once this one runs, so they don't fight for bandwidth
 }
 function stopClips() { wantPlay = false; clips.forEach((c) => c.pause()); }
 
@@ -53,6 +56,7 @@ clips.forEach((c, i) => {
   c.addEventListener("ended", () => playClip((i + 1) % clips.length));
   c.addEventListener("playing", () => showLive(i)); // only visible once it's moving
   for (const ev of ["loadedmetadata", "loadeddata", "canplay", "suspend", "stalled"]) c.addEventListener(ev, () => i === current && tryPlay());
+  for (const ev of ["progress", "suspend", "timeupdate"]) c.addEventListener(ev, () => i === current && warmNext());
 });
 for (const ev of ["pointerdown", "touchstart", "keydown", "scroll"]) addEventListener(ev, tryPlay, { passive: true });
 document.addEventListener("visibilitychange", () => !document.hidden && tryPlay());
@@ -140,8 +144,13 @@ function showPlan(params) {
   }));
   $("pworkout").textContent = `"${w.title}"`;
   $("preel").href = w.reel;
+  for (const r of document.querySelectorAll("#plan .reveal")) { r.classList.remove("in"); reveal.observe(r); }
   return true;
 }
+// below-the-fold sections rise in as they scroll into view (on load they'd finish off screen)
+const reveal = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); }
+}, { rootMargin: "0px 0px -8% 0px" });
 $("tlock").addEventListener("click", () => $("next").scrollIntoView({ behavior: "smooth", block: "start" }));
 $("restart").addEventListener("click", () => { answers = {}; saveAnswers(); location.hash = ""; });
 
