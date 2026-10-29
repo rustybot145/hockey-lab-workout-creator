@@ -14,6 +14,7 @@
       ]
     },
     { "source": "/fonts/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/academy/fonts/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
     { "source": "/clips/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] }
   ]
 }

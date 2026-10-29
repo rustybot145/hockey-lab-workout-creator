@@ -2,7 +2,7 @@
 
 Free lead magnet for Wyatt Beck's Hockey Lab ([@whockeylab](https://www.instagram.com/whockeylab/)), built by Truepoint Digital.
 
-**Flow:** landing → 5 questions → email → a simple 1-week stickhandling plan → Puck Control Academy (week 2 is locked).
+**Flow:** landing → 5 questions → email → a simple 1-week stickhandling plan → Puck Control Academy (week 2 is locked) → the Academy sales page at `/academy`.
 
 Every session is the same 4-drill workout from Wyatt's most-viewed reel ("20 minutes using 4 drills"). More weekly time means more sessions and longer drills; more time or a higher level means more reps on the fakes.
 
@@ -15,7 +15,9 @@ public/
   plan.js      plan engine: questions, answer validation, buildPlan(). Pure: answers in, plan out
   clips/       three 4-7s loops cut from Wyatt's reels, cut on his own edit points, + the first clip's poster
   fonts/       Big Shoulders Display + Archivo (variable WOFF2, SIL OFL)
-  logo-*.webp  Hockey Lab logo traced from his profile picture (2x / 3x)
+  logo-*.webp  Hockey Lab logo traced from his profile picture (2x / 3x), shared with /academy
+  academy/     $48 Puck Control Academy sales page: offer → VSL → buy → value stack → info → FAQ.
+               Same build as Josh Heald's page (Knewave + Barlow, own fonts/ folder), lab green. Absolute /academy/ paths so /academy and /academy/ both work.
 test.js        runs all 896 answer combinations through plan.js
 vercel.json    static hosting from public/, strict CSP + security headers, cache rules
 ```
@@ -32,4 +34,6 @@ python3 serve.py                          # local preview at http://localhost:43
 
 ## Before launch
 
-Email delivery (`/api/lead`, see the `ponytail:` note in `app.js`), Whop checkout link, Wyatt's upsell video, privacy and terms pages. Each is marked `[PLACEHOLDER]` in `index.html`.
+Email delivery (`/api/lead`, see the `ponytail:` note in `app.js`), Wyatt's upsell video, privacy and terms pages. Each is marked `[PLACEHOLDER]` in `index.html`.
+
+`/academy`: the Whop checkout link on every `.cta` and `.sticky` (now `#`; once it's `https://whop.com/...` the tap spinner turns on), Wyatt's VSL in the empty `.frame`, his playing background (HTML comment in the coach section), and his approval of the copy.
