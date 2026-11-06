@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<title>AI Workout Builder · Hockey Lab</title>
+<link rel="preload" href="/academy/fonts/knewave.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/academy/styles.css">
+<link rel="stylesheet" href="/builder/builder.css">
+</head>
+<body>
+
+<div class="glow" aria-hidden="true"></div>
+
+<main class="test wrap">
+
+  <!-- intro: fills the screen, title animates in -->
+  <section class="screen" id="intro">
+    <img class="mark" src="/logo-300.webp" srcset="/logo-300.webp 1x, /logo-450.webp 2x" width="120" height="44" alt="Hockey Lab">
+    <div class="hero">
+      <div class="rings" aria-hidden="true"><i></i><i></i><i></i></div>
+      <h1><span class="w">Build</span> <span class="w">your</span> <em><span class="w">hockey</span> <span class="w">workout</span></em></h1>
+    </div>
+    <button class="cta go" type="button" data-start>Build my plan</button>
+  </section>
+
+  <!-- one question at a time -->
+  <section class="screen" id="question" hidden>
+    <div class="progress" aria-hidden="true"></div>
+    <p class="eyebrow" data-step></p>
+    <h2 data-title></h2>
+    <p class="how" data-how hidden></p>
+
+    <div class="meter" data-type="number">
+      <label class="ask" for="answer" data-ask></label>
+      <div class="field">
+        <input id="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" placeholder="0" data-value>
+        <span data-unit></span>
+      </div>
+    </div>
+
+    <div class="choices" data-type="choice" role="group"></div>
+
+    <div class="actions">
+      <button class="cta save" type="button" data-next>Next</button>
+      <button class="ghost" type="button" data-skip>Skip</button>
+      <button class="back" type="button" data-back>Back</button>
+    </div>
+  </section>
+
+  <!-- the plan -->
+  <section class="screen" id="result" hidden>
+    <p class="brand">Your Hockey Lab plan</p>
+    <h1>Your <em>week</em></h1>
+    <p class="lead" data-summary></p>
+    <ol class="days" data-days></ol>
+    <div class="phases" data-phases role="group" aria-label="Which weeks"></div>
+    <p class="phase-name" data-phase-name></p>
+    <div data-sessions></div>
+    <p class="rest" data-rest></p>
+
+    <div class="part" data-score-block>
+      <h3>Your number</h3>
+      <p class="lead" data-score></p>
+    </div>
+
+    <div class="part cal">
+      <h3>Put it in your calendar</h3>
+      <label class="ask" for="time">What time do you train?</label>
+      <input id="time" type="time" value="17:00" data-time>
+      <button class="cta" type="button" data-ics>Add to my calendar</button>
+      <a class="ghost" data-gcal target="_blank" rel="noopener">Use Google Calendar</a>
+      <p class="hint" data-cal-note></p>
+    </div>
+
+    <button class="ghost" type="button" data-rebuild>Rebuild my plan</button>
+    <button class="back" type="button" data-clear>Clear my saved answers</button>
+  </section>
+
+</main>
+
+<!-- Wyatt doing the drill -->
+<dialog class="player" data-player aria-label="Drill video">
+  <button class="x" type="button" data-close aria-label="Close">×</button>
+  <video muted loop playsinline autoplay data-video></video>
+  <p class="count" data-count></p>
+  <h3 data-pname></h3>
+  <p data-prx></p>
+  <div class="nav">
+    <button class="ghost" type="button" data-prev>Back</button>
+    <button class="cta" type="button" data-fwd>Next</button>
+  </div>
+</dialog>
+
+<footer class="wrap">
+  <p>© 2026 Wyatt Beck · Hockey Lab · Not medical advice. Stop anything that hurts.</p>
+</footer>
+
+<script src="/builder/plan.js"></script>
+<script src="/builder/builder.js"></script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+/* AI Workout Builder: the sales page's fonts and base (/academy/styles.css, same as Josh's builder), its own color.
+   One orange accent on black throughout, matching the app logo in Whop. */
+:root { --accent: #ff8a3d; --bg: #000; --bg-2: #15100c; --lab: var(--accent); --lab-hi: color-mix(in srgb, var(--accent) 80%, #fff); --lab-dk: color-mix(in srgb, var(--accent) 60%, #000); }
+.test {
+  --top: max(20px, calc(env(safe-area-inset-top) + 12px)); --bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
+  max-width: 520px; min-height: 100dvh; position: relative; z-index: 1; display: flex; flex-direction: column;
+  padding: var(--top) 0 var(--bottom);
+}
+.screen { display: flex; flex-direction: column; flex: 1; }
+.screen[hidden], .part[hidden] { display: none; }
+
+/* soft light in the module's color behind the card */
+.glow {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(90% 55% at 50% -5%, color-mix(in srgb, var(--accent) 17%, transparent), transparent 72%);
+}
+
+.test h1 { font-size: clamp(2.1rem, 9vw, 3.2rem); line-height: 1.04; }
+.test h1 em { display: block; font-size: 1.2em; margin-top: .06em; rotate: -2deg; transform-origin: left; }
+.test h2 { font-size: clamp(2rem, 9.5vw, 3rem); margin: 2px 0 10px; color: var(--accent); }
+.test h3 { font: 600 .9rem/1 var(--label); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 12px; }
+.lead { color: var(--mute); margin: 18px 0 0; font-size: 1.06rem; }
+.lead b, .note b { color: var(--ink); font-weight: 600; }
+
+button.cta { border: 0; cursor: pointer; }
+.test .cta {
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 60%, #000), 0 16px 40px -14px color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: transform .25s var(--ease), background-color .5s var(--ease), box-shadow .5s var(--ease);
+}
+.test .cta:active { box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 60%, #000); }
+.ghost {
+  width: 100%; min-height: 56px; margin-top: 12px; border-radius: 12px; cursor: pointer;
+  background: rgba(18, 17, 16, .5); color: var(--ink); border: 1.5px solid var(--line);
+  font: 600 1.05rem/1 var(--label); letter-spacing: .1em; text-transform: uppercase;
+  transition: border-color .2s, background .2s;
+}
+.ghost:hover { border-color: var(--accent); background: var(--bg-2); }
+.cta:focus-visible, .ghost:focus-visible, .back:focus-visible, .meter button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.back {
+  align-self: center; min-height: 44px; margin-top: 8px; padding: 10px 20px; background: none; border: 0; cursor: pointer;
+  color: var(--mute); font: 600 .86rem/1 var(--label); letter-spacing: .12em; text-transform: uppercase;
+}
+.back:hover { color: var(--ink); }
+
+/* question card */
+.progress { display: flex; gap: 5px; margin-bottom: 22px; }
+.progress i { flex: 1; height: 5px; border-radius: 3px; background: var(--line); position: relative; overflow: hidden; }
+.progress i::after { content: ""; position: absolute; inset: 0; background: var(--c); transform: scaleX(var(--p)); transform-origin: left; transition: transform .5s var(--ease); }
+.goal { font: 400 1.15rem/1.35 var(--body); color: var(--mute); }
+.goal b { color: var(--ink); font-weight: 600; }
+.how {
+  color: var(--mute); margin-top: 10px; padding: 10px 14px; border-radius: 12px; font-size: 1rem; line-height: 1.4;
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-2)); border-left: 3px solid var(--accent);
+}
+.enter > * { animation: rise .55s var(--ease) both; }
+.enter > :nth-child(3) { animation-delay: .04s; }
+.enter > :nth-child(4), .enter > :nth-child(5) { animation-delay: .08s; }
+.enter > :nth-child(n+6) { animation-delay: .12s; }
+
+/* the answer: a question and a box they type the number into */
+html { touch-action: manipulation; }  /* no double-tap zoom on fast taps */
+.meter { margin-top: 18px; padding: 18px 16px 16px; border-radius: 16px; background: var(--bg-2); border: 1px solid var(--line); }
+.ask { display: block; font: 600 1.12rem/1.3 var(--body); margin-bottom: 12px; }
+.field {
+  display: flex; align-items: baseline; gap: 10px; padding: 6px 18px; border-radius: 12px;
+  background: var(--bg); border: 2px solid var(--line); transition: border-color .2s;
+}
+.field:focus-within { border-color: var(--accent); }
+.field input {
+  flex: 1; min-width: 0; background: none; border: 0; padding: 0; color: var(--ink);
+  font: 400 clamp(2.8rem, 14vw, 3.8rem)/1.1 var(--display); caret-color: var(--accent);
+}
+.field input:focus { outline: none; }
+.field input::placeholder { color: var(--line); }
+.field span { font: 600 1rem/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+/* tried to save with nothing typed */
+.nudge .field { border-color: var(--accent); animation: nudge .35s; }
+@keyframes nudge { 25% { translate: -6px 0; } 75% { translate: 6px 0; } }
+.actions { margin-top: auto; padding-top: 16px; scroll-margin-bottom: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.actions .save { grid-column: 1 / -1; }
+.actions .ghost, .actions .back { margin: 0; min-height: 52px; }
+.actions .back { order: 1; align-self: stretch; border: 1.5px solid var(--line); border-radius: 12px; }
+.actions .ghost { order: 2; }
+.actions:has([data-skip][hidden]) .back, .actions:has([data-next][hidden]) .back:only-of-type { grid-column: 1 / -1; }
+
+
+.note { margin: 30px 0 0; padding: 16px 18px; background: var(--bg-2); border-radius: 12px; color: var(--mute); }
+#result .cta { margin-top: 24px; }
+footer { position: relative; z-index: 1; }
+
+/* ---- Workout Builder ---- */
+.how[hidden], .meter[hidden], .choices[hidden], [data-next][hidden], [data-skip][hidden] { display: none; }
+.how { margin-bottom: 4px; }
+
+/* pick one / pick any */
+.choices { display: grid; gap: 10px; margin-top: 18px; }
+.choice {
+  display: grid; gap: 2px; align-content: center; min-height: 64px; text-align: left; padding: 12px 18px; border-radius: 14px; cursor: pointer;
+  background: var(--bg-2); border: 2px solid var(--line); color: var(--ink); font: inherit;
+  transition: border-color .2s, background .2s;
+}
+.choice b { font-weight: 600; font-size: 1.12rem; }
+.choice span { color: var(--mute); font-size: .92rem; }
+.choice:hover { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
+.choice[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg-2)); }
+.choice[aria-pressed="true"] b::after { content: " ✓"; color: var(--accent); }
+.choice:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.rest, .hint { color: var(--mute); font-size: .95rem; margin-top: 6px; }
+
+.progress i { --c: var(--accent); }
+
+/* logo + name */
+.brand { margin-bottom: 18px; font: 600 .86rem/1.2 var(--label); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+
+/* result */
+#result { align-items: stretch; }
+#result h1 { font-size: clamp(1.8rem, 7.6vw, 2.6rem); }
+#result .lead { margin-top: 12px; }
+#result .lead b { color: var(--ink); }
+.part { margin-top: 30px; }
+
+/* the week at a glance: 7 days, training days lit */
+.days { list-style: none; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 22px; }
+.days li { display: grid; gap: 4px; justify-items: center; padding: 10px 0 9px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); }
+.days b { font: 600 .8rem/1 var(--label); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.days span { font: 600 .7rem/1 var(--label); letter-spacing: .06em; text-transform: uppercase; color: var(--mute); }
+.days .train { background: var(--accent); border-color: var(--accent); }
+.days .train b, .days .train span { color: var(--bg); }
+.days .mobility { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.days .mobility b { color: var(--ink); }
+
+/* weeks 1-2 / 3-4 / 5-6 */
+.phases { display: flex; gap: 6px; margin-top: 22px; padding: 4px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); }
+.phases:empty { display: none; }
+.phases button { flex: 1; min-height: 44px; border: 0; border-radius: 9px; cursor: pointer; background: none; color: var(--mute); font: 600 .95rem/1.1 var(--label); letter-spacing: .06em; text-transform: uppercase; }
+.phases [aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.phases button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* each session: when, then every drill with Wyatt's clip */
+.session { margin-top: 16px; border-radius: 16px; background: var(--bg-2); border: 1px solid var(--line); overflow: hidden; }
+.session header { padding: 14px 16px 12px; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.session h4 { font: 400 1.3rem/1.1 var(--display); text-transform: uppercase; color: var(--accent); }
+.session .on { display: block; margin-top: 4px; font: 600 .86rem/1.2 var(--label); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); }
+.session ol { list-style: none; counter-reset: ex; }
+.ex { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: center; padding: 14px 16px; border-top: 1px solid var(--line); }
+.ex .n { font: 400 1.3rem/1 var(--display); color: var(--accent); text-align: center; }
+.demo {
+  min-height: 44px; max-width: 108px; padding: 6px 12px; border-radius: 10px; cursor: pointer; text-align: center;
+  background: color-mix(in srgb, var(--accent) 14%, transparent); border: 1.5px solid var(--accent); color: var(--ink);
+  font: 700 .8rem/1.15 var(--label); transition: background .2s;
+}
+.demo:hover { background: color-mix(in srgb, var(--accent) 28%, transparent); }
+.demo:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.ex b { display: block; font-weight: 600; line-height: 1.3; }
+.ex span { display: block; color: var(--mute); font-size: .95rem; line-height: 1.4; margin-top: 2px; }
+.ex.yours span { color: var(--ink); }
+.ex.yours b::after {
+  content: "Set to you"; margin-left: 8px; padding: 2px 7px; border-radius: 99px; vertical-align: 2px; white-space: nowrap;
+  font: 600 .66rem/1.4 var(--label); letter-spacing: .1em; text-transform: uppercase; color: var(--bg); background: var(--accent);
+}
+.session .watch { display: block; width: calc(100% - 32px); margin: 6px 16px 16px; min-height: 52px; }
+
+/* calendar */
+.cal input[type="time"] {
+  display: block; width: 100%; min-height: 60px; padding: 0 18px; border-radius: 12px; background: var(--bg); color: var(--ink);
+  border: 2px solid var(--line); font: 400 2rem/1 var(--display); color-scheme: dark;
+}
+.cal input[type="time"]:focus { outline: none; border-color: var(--accent); }
+.cal .cta { margin-top: 14px; }
+.cal .ghost { display: grid; place-items: center; text-decoration: none; }
+#result > .ghost { margin-top: 24px; }
+
+/* Wyatt doing it */
+.player {
+  margin: auto; width: min(420px, calc(100% - 32px)); max-height: calc(100svh - 32px); padding: 0; border: 1px solid var(--line); border-radius: 18px;
+  background: var(--bg-2); color: var(--ink); overflow: auto;
+}
+.player::backdrop { background: rgba(8, 8, 7, .82); }
+.player video { display: block; width: 100%; aspect-ratio: 9 / 16; max-height: 62svh; object-fit: cover; background: #000; }
+.player .count { margin: 14px 18px 0; font: 600 .82rem/1 var(--label); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.player h3 { margin: 6px 18px 0; font: 400 1.4rem/1.15 var(--display); text-transform: uppercase; }
+.player h3 + p { margin: 6px 18px 0; color: var(--mute); }
+.player .nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 18px 18px; }
+.player .nav > * { margin: 0; min-height: 52px; }
+.player .x {
+  position: absolute; top: 10px; right: 10px; z-index: 1; width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(18, 17, 16, .7); color: #fff; font: 400 1.6rem/1 var(--body);
+}
+.player .x:focus-visible, .player .nav > :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.player .nav .cta { box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 60%, #000); border: 0; cursor: pointer; }
+.player [data-prev]:disabled { opacity: .4; cursor: default; }
+
+
+/* ---- intro: fills the screen, the title builds itself in ---- */
+#intro { text-align: center; }
+#intro .brand { margin: 0; animation: fade .6s ease both; }
+.hero { position: relative; flex: 1; display: grid; place-items: center; padding: 24px 0; }
+.hero h1 { position: relative; font-size: clamp(3.1rem, 16vw, 5.6rem); line-height: .94; }
+.hero h1 em { display: block; rotate: -3deg; margin-top: .1em; font-size: 1em; transform-origin: center; }
+/* padding gives Knewave's overhanging strokes room, so nothing is clipped mid-animation */
+.hero .w { display: inline-block; padding: .06em .12em; margin: -.06em -.12em; animation: word .9s var(--ease) both; will-change: transform, opacity; }
+.hero .w:nth-child(2) { animation-delay: .12s; }
+.hero em .w { animation-delay: .32s; }
+.hero em .w + .w { animation-delay: .46s; }
+@keyframes word { from { opacity: 0; transform: translateY(55%) rotate(5deg) scale(.94); } to { opacity: 1; transform: none; } }
+/* a swipe under "hockey workout" once the words land */
+.hero h1 em::after {
+  content: ""; display: block; height: .1em; margin: .08em auto 0; width: 86%; border-radius: 99px; background: var(--accent);
+  transform: scaleX(0); animation: swipe .7s var(--ease) .95s forwards; box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+@keyframes swipe { to { transform: scaleX(1); } }
+/* rings pulse out from behind the title */
+.rings { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.rings i { grid-area: 1 / 1; width: min(78vw, 420px); aspect-ratio: 1; border-radius: 50%; border: 1.5px solid var(--accent); opacity: 0; animation: ring 3.6s ease-out infinite; }
+.rings i:nth-child(2) { animation-delay: 1.2s; }
+.rings i:nth-child(3) { animation-delay: 2.4s; }
+@keyframes ring { 0% { opacity: .45; transform: scale(.35); } 100% { opacity: 0; transform: scale(1.25); } }
+#intro .go { animation: rise .8s var(--ease) 1.05s both; position: relative; overflow: hidden; }
+#intro .go::after {
+  content: ""; position: absolute; inset: 0; translate: -120% 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .45) 50%, transparent 70%); animation: shine 3.2s ease-in-out 2s infinite;
+}
+@keyframes shine { 0%, 60% { translate: -120% 0; } 100% { translate: 120% 0; } }
+@keyframes fade { from { opacity: 0; } }
+.glow { animation: breathe 5s ease-in-out infinite alternate; }
+@keyframes breathe { to { opacity: .6; transform: scale(1.08); } }
+/* the footer only under the finished plan */
+body:has(#result[hidden]) footer { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero .w, #intro .go, #intro .brand, .rings i, .glow, #intro .go::after { animation: none; }
+  .hero h1 em::after { animation: none; transform: none; }
+}
+
+/* focus: two per row; days and minutes: one row of numbers */
+.choices[data-layout="two"] { grid-template-columns: 1fr 1fr; }
+.choices[data-layout="nums"] { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.choices[data-layout="three"] { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.choices[data-layout="nums"] .choice, .choices[data-layout="three"] .choice { justify-items: center; text-align: center; padding: 10px 0; min-height: 84px; }
+.choices[data-layout="nums"] .choice b, .choices[data-layout="three"] .choice b { font: 400 2rem/1 var(--display); }
+.choices[data-layout="nums"] .choice[aria-pressed="true"] b::after, .choices[data-layout="three"] .choice[aria-pressed="true"] b::after { content: none; }
+.choices[data-layout="two"] .choice { min-height: 58px; padding: 10px 14px; }
+
+/* typing steps: the keyboard covers the bottom of the screen, so Next sits right under the answer */
+.typing .actions { margin-top: 0; padding-top: 14px; }
+.typing .how { margin-top: 6px; padding: 8px 12px; font-size: .95rem; }
+.typing .meter { margin-top: 12px; padding: 14px 14px 12px; }
+.typing .ask { margin-bottom: 8px; font-size: 1.05rem; }
+.typing .progress { margin-bottom: 14px; }
+.typing h2 { margin-bottom: 6px; }
+
+/* ---- Hockey Lab additions ---- */
+#intro .mark { width: 120px; height: auto; margin: 0 auto; animation: fade .6s ease both; }
+.phase-name { margin-top: 12px; font: 400 1.3rem/1.1 var(--display); text-transform: uppercase; color: var(--ink); text-align: center; }
+.session .kind { display: block; margin-bottom: 4px; font: 600 .78rem/1 var(--label); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+.session .sub { padding: 10px 16px; border-top: 1px solid var(--line); color: var(--mute); font-size: .92rem; }
+.session .src { display: block; padding: 10px 16px 2px; color: var(--accent); font: 600 .86rem/1.2 var(--label); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.session .src:hover { text-decoration: underline; }
+.ex.warm .n { color: var(--mute); }
+/* gym cards: plain rows, no clips, a cooler header so the two kinds read apart */
+.session.gym header { background: rgba(238, 242, 236, .05); }
+.session.gym h4 { color: var(--ink); }
+.session.gym .ex { grid-template-columns: 26px 1fr; }
+.session.gym ol + .sub { padding-bottom: 16px; }
+.days .gym { background: color-mix(in srgb, var(--accent) 25%, var(--bg-2)); border-color: var(--accent); }
+.days .gym b, .days .gym span, .days .hands b, .days .hands span { color: var(--ink); }
+.days .hands { background: var(--accent); border-color: var(--accent); }
+.days .hands b, .days .hands span { color: var(--bg); }
+footer p { font: 600 .74rem/1.5 var(--label); letter-spacing: .06em; text-transform: uppercase; color: var(--mute); text-align: center; padding: 20px 0 30px; }
