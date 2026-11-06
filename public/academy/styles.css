@@ -159,6 +159,7 @@ summary::after {
 }
 details[open] summary::after { rotate: 225deg; margin-top: -3px; }
 details p { color: var(--mute); padding: 0 0 20px; max-width: 60ch; }
+details a { color: var(--lab); text-underline-offset: 3px; }
 
 .final { max-width: 520px; text-align: center; padding: 84px 0 70px; }
 .final h2 { margin-bottom: 28px; }
