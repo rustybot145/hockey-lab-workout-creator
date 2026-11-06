@@ -1,6 +1,6 @@
-/* AI Workout Builder: the sales page's fonts and base (/academy/styles.css, same as Josh's builder), its own color.
-   One orange accent on black throughout, matching the app logo in Whop. */
-:root { --accent: #ff8a3d; --bg: #000; --bg-2: #15100c; --lab: var(--accent); --lab-hi: color-mix(in srgb, var(--accent) 80%, #fff); --lab-dk: color-mix(in srgb, var(--accent) 60%, #000); }
+/* AI Workout Builder: the sales page's fonts, base and colors (/academy/styles.css): lab green on near-black,
+   matching the green app logo in Whop and the course art. */
+:root { --accent: var(--lab); --bg: #0b0c0c; --bg-2: #141615; }
 .test {
   --top: max(20px, calc(env(safe-area-inset-top) + 12px)); --bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
   max-width: 520px; min-height: 100dvh; position: relative; z-index: 1; display: flex; flex-direction: column;

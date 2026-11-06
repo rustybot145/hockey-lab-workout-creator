@@ -5,7 +5,7 @@ Wyatt Beck's Hockey Lab ([@whockeylab](https://www.instagram.com/whockeylab/)), 
 | Path | What |
 |---|---|
 | `/academy` | $48 sales page: offer → VSL → buy → value stack → info → FAQ (Knewave + Barlow, lab green) |
-| `/builder` | **AI Workout Builder**, embedded in Whop as a private app on the Academy (orange) |
+| `/builder` | **AI Workout Builder**, embedded in Whop as a private app on the Academy (same lab green as the sales page) |
 
 ## AI Workout Builder
 Questions (level, age, where you train, focus, days, session length, optional 30-second touch test) → a 6-week plan in three 2-week phases, with a week strip, session cards, Wyatt's demo clips, a calendar export and saved answers.
