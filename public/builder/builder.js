@@ -75,7 +75,7 @@ function next() {
 function nudge() { screens.question.classList.add("nudge"); setTimeout(() => screens.question.classList.remove("nudge"), 400); }
 
 // ---- the plan ----
-let plan = null;
+let plan = null, view = { pi: 0, kind: "hands" };  // which 2 weeks and which workout (at home / gym) is on screen
 
 function build(fresh) {
   // a gym-only player has no stickhandling answers: drop stale ones from an earlier build
@@ -85,18 +85,23 @@ function build(fresh) {
 
   const hands = plan.week.filter((x) => x.kind === "hands").length, gym = plan.week.filter((x) => x.kind === "gym").length;
   $("[data-summary]").textContent = [hands && `${hands} stickhandling`, gym && `${gym} gym`].filter(Boolean).join(" + ") + ` days a week for ${plan.weeks} weeks.`;
-  $("[data-days]").replaceChildren(...plan.week.map((p) => {
-    const li = el("li", p.kind);
-    li.append(el("b", "", DAY_NAMES[p.d]), el("span", "", p.kind === "hands" ? "Hands" : p.kind === "gym" ? "Gym" : "Rest"));
-    return li;
+  // the switch between the at-home stickhandling and the gym workouts, when the plan has both
+  view = { pi: 0, kind: hands ? "hands" : "gym" };
+  $("[data-kinds]").hidden = !(hands && gym);
+  $("[data-kinds]").replaceChildren(...[["hands", "At-home stickhandling"], ["gym", "Gym"]].map(([k, label]) => {
+    const b = el("button", "", label);
+    b.type = "button";
+    b.dataset.kind = k;
+    b.addEventListener("click", () => { view.kind = k; sessions(); });
+    return b;
   }));
   $("[data-phases]").replaceChildren(...plan.phases.map((ph, i) => {
     const b = el("button", "", ph.weeks);
     b.type = "button";
-    b.addEventListener("click", () => sessions(i));
+    b.addEventListener("click", () => { view.pi = i; sessions(); });
     return b;
   }));
-  sessions(0);
+  sessions();
   $("[data-rest]").textContent = "Rest days: let your hands and legs recover. Stay consistent.";
   calendarLinks();
 
@@ -105,12 +110,13 @@ function build(fresh) {
   show("result");
 }
 
-// one card per session: which days, then every drill (stickhandling ones with Wyatt's clip)
-function sessions(pi) {
-  const ph = plan.phases[pi];
-  [...$("[data-phases]").children].forEach((b, i) => b.setAttribute("aria-pressed", i === pi));
-  $("[data-phase-name]").textContent = ph.name;
-  $("[data-sessions]").replaceChildren(...ph.sessions.map((s) => {
+// one card per session of the chosen workout: which days, then every drill (stickhandling ones with Wyatt's clip)
+function sessions() {
+  const ph = plan.phases[view.pi], gym = view.kind === "gym";
+  [...$("[data-phases]").children].forEach((b, i) => b.setAttribute("aria-pressed", i === view.pi));
+  [...$("[data-kinds]").children].forEach((b) => b.setAttribute("aria-pressed", b.dataset.kind === view.kind));
+  $("[data-phase-name]").textContent = gym ? ph.gymName : ph.name;
+  $("[data-sessions]").replaceChildren(...ph.sessions.filter((s) => !!s.gym === gym).map((s) => {
     const box = el("div", "session" + (s.gym ? " gym" : "")), head = el("header"), ol = el("ol");
     head.append(el("span", "kind", s.label), el("h4", "", s.title), el("span", "on", s.on.join(" · ") + (s.minutes ? ` · ${s.minutes} min` : "")));
     const items = [...(s.warmup ? s.warmup.drills.map((d) => ({ ...d, warm: true })) : []), ...s.drills];

@@ -193,7 +193,7 @@ function buildPlan(a) {
       const on = week.filter((x) => x.kind === "gym" && x.slot === slot).map((x) => DAY_NAMES[x.d]);
       if (on.length) sessions.push({ label: `Gym ${slot.toUpperCase()}`, on, ...gymSession(slot, a.age || "adult", p) });
     }
-    return { weeks: `Weeks ${p * 2 + 1}–${p * 2 + 2}`, name: where === "gym" ? GYM_PHASES[p].name : ph.name, sessions };
+    return { weeks: `Weeks ${p * 2 + 1}–${p * 2 + 2}`, name: where === "gym" ? GYM_PHASES[p].name : ph.name, gymName: GYM_PHASES[p].name, sessions };
   });
   return { week, phases, weeks: WEEKS, train: days.length, test: a.test };
 }
